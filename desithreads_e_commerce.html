@@ -1,0 +1,2128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BharatStyle - Exclusive Indian Fashion Brands | Online Shopping</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Assistant', 'Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        myntraPink: '#ff3f6c',
+                        myntraPinkHover: '#e6355f',
+                        myntraOrange: '#ff905a',
+                        myntraTeal: '#03a685',
+                        myntraDark: '#282c3f',
+                        myntraGray: '#535766',
+                        myntraLight: '#f5f5f6',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Smooth custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f5f5f6; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d4d5d9; 
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94969f; 
+        }
+
+        /* Range Slider Custom Styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 18px;
+            width: 18px;
+            border-radius: 50%;
+            background: #ff3f6c;
+            cursor: pointer;
+            margin-top: -6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 6px;
+            cursor: pointer;
+            background: #e2e8f0;
+            border-radius: 3px;
+        }
+
+        /* Toast & Drawer transitions */
+        .toast-enter {
+            transform: translateY(100%);
+            opacity: 0;
+        }
+        .toast-active {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .product-card:hover .product-actions {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background-color: #ff3f6c;
+            transition: width 0.25s ease;
+        }
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="bg-white text-myntraDark flex flex-col min-h-screen font-sans selection:bg-myntraPink selection:text-white">
+
+    <!-- Top Promo Strip -->
+    <div class="bg-gradient-to-r from-myntraDark via-rose-900 to-myntraDark text-white text-xs py-2 px-4 text-center font-semibold tracking-wide">
+        <span>🎉 GREAT INDIAN ETHNIC FEST! Flat 20% OFF on orders above ₹1,999 | Use Code: <strong class="text-amber-300 border border-amber-300/40 px-1.5 py-0.5 rounded ml-1 cursor-pointer" onclick="copyCoupon('DESI20')">DESI20</strong></span>
+    </div>
+
+    <!-- Myntra-Inspired Sticky Header -->
+    <header class="bg-white shadow-[0_4px_12px_0_rgba(0,0,0,0.05)] sticky top-0 z-40">
+        <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 h-20 flex items-center justify-between gap-4">
+            
+            <!-- Left: Mobile Menu & Brand Logo -->
+            <div class="flex items-center gap-6">
+                <button onclick="toggleMobileFilters()" class="lg:hidden text-myntraDark hover:text-myntraPink text-xl p-1">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                
+                <div onclick="resetToHome()" class="flex items-center cursor-pointer group">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-tr from-myntraPink to-myntraOrange flex items-center justify-center text-white font-black text-2xl shadow-sm group-hover:scale-105 transition-transform">
+                        B
+                    </div>
+                    <div class="ml-2.5">
+                        <span class="font-extrabold text-2xl tracking-tight text-myntraDark">Bharat<span class="text-myntraPink">Style</span></span>
+                        <span class="block text-[9px] font-bold uppercase tracking-widest text-myntraGray -mt-1">100% Indian Brands</span>
+                    </div>
+                </div>
+
+                <!-- Category Navigation Links -->
+                <nav class="hidden md:flex items-center space-x-7 h-20 ml-4">
+                    <button onclick="setCategoryFilter('All')" id="nav-All" class="nav-link active relative h-full flex items-center text-sm font-bold uppercase tracking-wider text-myntraDark hover:text-myntraPink transition">All</button>
+                    <button onclick="setCategoryFilter('Men')" id="nav-Men" class="nav-link relative h-full flex items-center text-sm font-bold uppercase tracking-wider text-myntraDark hover:text-myntraPink transition">Men</button>
+                    <button onclick="setCategoryFilter('Women')" id="nav-Women" class="nav-link relative h-full flex items-center text-sm font-bold uppercase tracking-wider text-myntraDark hover:text-myntraPink transition">Women</button>
+                    <button onclick="setCategoryFilter('Ethnic')" id="nav-Ethnic" class="nav-link relative h-full flex items-center text-sm font-bold uppercase tracking-wider text-myntraDark hover:text-myntraPink transition">Ethnic</button>
+                    <button onclick="setCategoryFilter('Festive')" id="nav-Festive" class="nav-link relative h-full flex items-center text-sm font-bold uppercase tracking-wider text-myntraDark hover:text-myntraPink transition">
+                        Festive <span class="ml-1 text-[10px] bg-myntraPink text-white px-1.5 py-0.2 rounded-sm font-extrabold">NEW</span>
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Center: Live Search Bar -->
+            <div class="hidden sm:flex flex-1 max-w-md lg:max-w-lg mx-4">
+                <div class="relative w-full">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                    <input 
+                        type="text" 
+                        id="search-input"
+                        oninput="handleSearch(this.value)"
+                        placeholder="Search for Fabindia, Manyavar, Kurtas, Sarees..." 
+                        class="w-full bg-myntraLight text-sm text-myntraDark pl-11 pr-9 py-2.5 rounded-md border border-transparent focus:border-gray-300 focus:bg-white focus:outline-none transition"
+                    >
+                    <button id="clear-search-btn" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-xs">
+                        <i class="fa-solid fa-circle-xmark text-sm"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right: Action Icons (Brand Directory, Wishlist, Bag) -->
+            <div class="flex items-center space-x-5 sm:space-x-7">
+                <!-- Indian Brands Quick Pill -->
+                <button onclick="scrollToCatalog()" class="hidden xl:flex flex-col items-center text-myntraDark hover:text-myntraPink transition">
+                    <i class="fa-solid fa-award text-lg"></i>
+                    <span class="text-xs font-bold mt-0.5">10 Brands</span>
+                </button>
+
+                <!-- Wishlist Trigger -->
+                <button onclick="toggleWishlistDrawer(true)" class="relative flex flex-col items-center text-myntraDark hover:text-myntraPink transition">
+                    <i class="fa-regular fa-heart text-lg"></i>
+                    <span id="wishlist-badge" class="hidden absolute -top-1.5 -right-2 bg-myntraPink text-white text-[10px] font-bold rounded-full h-4 min-w-[16px] px-1 flex items-center justify-center">0</span>
+                    <span class="text-xs font-bold mt-0.5">Wishlist</span>
+                </button>
+
+                <!-- Shopping Bag Trigger -->
+                <button onclick="toggleBagDrawer(true)" class="relative flex flex-col items-center text-myntraDark hover:text-myntraPink transition">
+                    <i class="fa-solid fa-bag-shopping text-lg"></i>
+                    <span id="bag-badge" class="hidden absolute -top-1.5 -right-2 bg-myntraPink text-white text-[10px] font-bold rounded-full h-4 min-w-[16px] px-1 flex items-center justify-center">0</span>
+                    <span class="text-xs font-bold mt-0.5">Bag</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Search & Quick Categories -->
+        <div class="sm:hidden px-4 pb-3 space-y-2 border-t border-gray-100 pt-2">
+            <div class="relative w-full">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                <input 
+                    type="text" 
+                    id="mobile-search-input"
+                    oninput="handleSearch(this.value)"
+                    placeholder="Search Indian brands, kurtas, sarees..." 
+                    class="w-full bg-myntraLight text-xs text-myntraDark pl-9 pr-4 py-2 rounded-md focus:bg-white focus:outline-none border border-transparent focus:border-gray-300"
+                >
+            </div>
+            <div class="flex items-center space-x-2 overflow-x-auto pb-1 no-scrollbar text-xs font-bold">
+                <button onclick="setCategoryFilter('All')" class="px-3 py-1 rounded-full bg-myntraLight text-myntraDark whitespace-nowrap">All</button>
+                <button onclick="setCategoryFilter('Men')" class="px-3 py-1 rounded-full bg-myntraLight text-myntraDark whitespace-nowrap">Men</button>
+                <button onclick="setCategoryFilter('Women')" class="px-3 py-1 rounded-full bg-myntraLight text-myntraDark whitespace-nowrap">Women</button>
+                <button onclick="setCategoryFilter('Ethnic')" class="px-3 py-1 rounded-full bg-myntraLight text-myntraDark whitespace-nowrap">Ethnic</button>
+                <button onclick="setCategoryFilter('Festive')" class="px-3 py-1 rounded-full bg-myntraLight text-myntraPink whitespace-nowrap">✨ Festive</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN STOREFRONT VIEW -->
+    <main id="storefront-view" class="flex-grow">
+        
+        <!-- Promotional Festive Hero Banner -->
+        <section id="hero-banner" class="relative bg-myntraDark overflow-hidden">
+            <div class="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 min-h-[380px] sm:min-h-[440px]">
+                <!-- Left Text Banner -->
+                <div class="lg:col-span-7 flex flex-col justify-center px-6 sm:px-12 lg:px-16 py-10 z-10 bg-gradient-to-r from-amber-950 via-rose-950 to-transparent">
+                    <div class="inline-flex items-center space-x-2 bg-amber-400/20 border border-amber-300/40 text-amber-300 text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full w-fit mb-4">
+                        <i class="fa-solid fa-sparkles"></i>
+                        <span>Swadeshi Luxury Edit 2026</span>
+                    </div>
+                    <h1 class="text-3xl sm:text-5xl font-black text-white leading-tight tracking-tight">
+                        INDIA'S FINEST <br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-orange-300 to-rose-400">HERITAGE & MODERN</span> WEAR
+                    </h1>
+                    <p class="text-gray-200 text-sm sm:text-base mt-3 max-w-xl font-normal">
+                        Curated collections exclusively from India's most loved homegrown labels—Fabindia, Manyavar, Biba, Raymond, House of Pataudi, Soch & more. Up to 60% Off.
+                    </p>
+                    <div class="mt-7 flex flex-wrap gap-3">
+                        <button onclick="setCategoryFilter('Festive'); scrollToCatalog();" class="bg-myntraPink hover:bg-myntraPinkHover text-white font-bold text-sm uppercase tracking-wider px-7 py-3.5 rounded shadow-lg transition transform hover:-translate-y-0.5">
+                            Explore Festive Edit <i class="fa-solid fa-arrow-right ml-1.5"></i>
+                        </button>
+                        <button onclick="setCategoryFilter('Ethnic'); scrollToCatalog();" class="bg-white/10 hover:bg-white/20 text-white border border-white/30 backdrop-blur-sm font-bold text-sm uppercase tracking-wider px-6 py-3.5 rounded transition">
+                            Shop Ethnic Wear
+                        </button>
+                    </div>
+                    <!-- Brand Mini Ticker -->
+                    <div class="mt-8 pt-5 border-t border-white/10 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-gray-300 font-semibold">
+                        <span class="text-amber-300 uppercase tracking-wider">Featured Labels:</span>
+                        <span>FABINDIA</span> • <span>MANYAVAR</span> • <span>BIBA</span> • <span>RAYMOND</span> • <span>W</span> • <span>SOCH</span>
+                    </div>
+                </div>
+
+                <!-- Right Hero Imagery -->
+                <div class="lg:col-span-5 relative min-h-[260px] lg:min-h-full">
+                    <img 
+                        src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1000&q=80" 
+                        alt="Indian Festive Fashion" 
+                        onerror="this.src='https://placehold.co/800x600/881337/ffffff?text=BharatStyle+Festive+Collection'"
+                        class="w-full h-full object-cover object-center"
+                    >
+                    <div class="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-rose-950 via-rose-950/40 to-transparent"></div>
+                    <!-- Floating Offer Badge -->
+                    <div class="absolute bottom-5 right-5 bg-white/95 backdrop-blur-md p-4 rounded-lg shadow-xl border-l-4 border-myntraPink max-w-[220px]">
+                        <p class="text-[11px] font-bold uppercase text-myntraGray">Wedding & Festive</p>
+                        <p class="text-lg font-black text-myntraDark leading-tight">40-60% OFF</p>
+                        <p class="text-xs text-myntraTeal font-bold mt-0.5">+ Extra 20% with DESI20</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Brand Filter Pills Bar -->
+        <section class="bg-myntraLight/70 border-b border-gray-200 py-4">
+            <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
+                <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1" id="top-brand-pills">
+                    <!-- Populated dynamically by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Catalog Container: Breadcrumbs, Top Sort Bar, Sidebar + Product Grid -->
+        <section id="catalog-section" class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 py-6">
+            
+            <!-- Breadcrumb & Count -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-gray-200">
+                <div>
+                    <p class="text-xs text-myntraGray">Home / Indian Apparel / <span id="breadcrumb-category" class="font-bold text-myntraDark">All Collections</span></p>
+                    <h2 class="text-base sm:text-lg font-bold text-myntraDark mt-1">
+                        <span id="heading-category">Exclusive Indian Brands</span> 
+                        <span id="product-count-label" class="text-myntraGray font-normal text-sm">- 16 items</span>
+                    </h2>
+                </div>
+
+                <!-- Top Right Sort & Subcategory Controls -->
+                <div class="flex flex-wrap items-center gap-3">
+                    <!-- Subcategory Pills (Ethnic vs Casual/Formal) -->
+                    <div class="inline-flex rounded-md bg-myntraLight p-1 text-xs font-bold">
+                        <button onclick="setStyleFilter('All')" id="style-All" class="px-3 py-1.5 rounded bg-white text-myntraDark shadow-sm transition">All Styles</button>
+                        <button onclick="setStyleFilter('Ethnic')" id="style-Ethnic" class="px-3 py-1.5 rounded text-myntraGray hover:text-myntraDark transition">Ethnic</button>
+                        <button onclick="setStyleFilter('Casual/Formal')" id="style-Casual/Formal" class="px-3 py-1.5 rounded text-myntraGray hover:text-myntraDark transition">Casual / Formal</button>
+                    </div>
+
+                    <!-- Sort Dropdown -->
+                    <div class="flex items-center border border-gray-300 rounded px-3 py-1.5 bg-white text-sm">
+                        <span class="text-myntraGray mr-2 text-xs">Sort by:</span>
+                        <select id="sort-select" onchange="handleSort(this.value)" class="font-bold text-myntraDark focus:outline-none bg-transparent text-xs sm:text-sm cursor-pointer">
+                            <option value="popularity">Popularity</option>
+                            <option value="price-asc">Price: Low to High</option>
+                            <option value="price-desc">Price: High to Low</option>
+                            <option value="discount">Better Discount</option>
+                            <option value="rating">Customer Rating</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Filter Chips -->
+            <div id="active-filter-chips" class="flex flex-wrap items-center gap-2 pt-3 empty:hidden"></div>
+
+            <!-- Main Layout: Left Sidebar Filters + Right Product Grid -->
+            <div class="flex flex-col lg:flex-row gap-8 mt-5">
+                
+                <!-- Sidebar Filter Panel (Desktop & Mobile Slide-over) -->
+                <aside id="filter-sidebar" class="fixed lg:static inset-0 z-50 lg:z-auto bg-black/50 lg:bg-transparent hidden lg:block lg:w-64 flex-shrink-0">
+                    <div class="bg-white lg:bg-transparent w-80 lg:w-full h-full lg:h-auto overflow-y-auto p-5 lg:p-0 lg:pr-4 lg:border-r border-gray-200">
+                        
+                        <!-- Filter Header -->
+                        <div class="flex items-center justify-between pb-4 border-b border-gray-200">
+                            <span class="font-extrabold text-sm uppercase tracking-wider text-myntraDark">Filters</span>
+                            <div class="flex items-center gap-3">
+                                <button onclick="clearAllFilters()" class="text-xs font-bold text-myntraPink uppercase hover:underline">Clear All</button>
+                                <button onclick="toggleMobileFilters()" class="lg:hidden text-gray-500 hover:text-black">
+                                    <i class="fa-solid fa-xmark text-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Category Radio Group -->
+                        <div class="py-5 border-b border-gray-200">
+                            <h3 class="text-xs font-extrabold uppercase tracking-wider text-myntraDark mb-3">Department</h3>
+                            <div class="space-y-2 text-sm" id="sidebar-category-list">
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="radio" name="cat-radio" value="All" checked onchange="setCategoryFilter('All')" class="accent-myntraPink w-4 h-4">
+                                    <span class="ml-2.5 text-myntraDark font-medium">All Departments</span>
+                                </label>
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="radio" name="cat-radio" value="Women" onchange="setCategoryFilter('Women')" class="accent-myntraPink w-4 h-4">
+                                    <span class="ml-2.5 text-myntraDark font-medium">Women</span>
+                                </label>
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="radio" name="cat-radio" value="Men" onchange="setCategoryFilter('Men')" class="accent-myntraPink w-4 h-4">
+                                    <span class="ml-2.5 text-myntraDark font-medium">Men</span>
+                                </label>
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="radio" name="cat-radio" value="Ethnic" onchange="setCategoryFilter('Ethnic')" class="accent-myntraPink w-4 h-4">
+                                    <span class="ml-2.5 text-myntraDark font-medium">Pure Ethnic Wear</span>
+                                </label>
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="radio" name="cat-radio" value="Festive" onchange="setCategoryFilter('Festive')" class="accent-myntraPink w-4 h-4">
+                                    <span class="ml-2.5 text-myntraDark font-medium">Festive & Wedding</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Indian Brands Checkboxes -->
+                        <div class="py-5 border-b border-gray-200">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="text-xs font-extrabold uppercase tracking-wider text-myntraDark">Indian Brands</h3>
+                                <span class="text-[11px] text-myntraGray font-semibold">10 Verified</span>
+                            </div>
+                            <div class="space-y-2.5 max-h-64 overflow-y-auto pr-1 text-sm" id="sidebar-brands-list">
+                                <!-- Injected via JS -->
+                            </div>
+                        </div>
+
+                        <!-- Price Range Slider -->
+                        <div class="py-5 border-b border-gray-200">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="text-xs font-extrabold uppercase tracking-wider text-myntraDark">Max Price</h3>
+                                <span id="price-slider-label" class="text-xs font-extrabold text-myntraPink">Up to ₹15,000</span>
+                            </div>
+                            <input 
+                                type="range" 
+                                id="price-range-slider" 
+                                min="999" 
+                                max="15000" 
+                                step="500" 
+                                value="15000" 
+                                oninput="handlePriceFilter(this.value)"
+                            >
+                            <div class="flex justify-between text-[11px] text-myntraGray mt-1.5 font-semibold">
+                                <span>₹999</span>
+                                <span>₹7,500</span>
+                                <span>₹15,000</span>
+                            </div>
+                        </div>
+
+                        <!-- Discount Filter -->
+                        <div class="py-5">
+                            <h3 class="text-xs font-extrabold uppercase tracking-wider text-myntraDark mb-3">Minimum Discount</h3>
+                            <div class="space-y-2 text-sm">
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="radio" name="disc-radio" value="0" checked onchange="handleDiscountFilter(0)" class="accent-myntraPink w-4 h-4">
+                                    <span class="ml-2.5 text-myntraGray">All Discounts</span>
+                                </label>
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="radio" name="disc-radio" value="20" onchange="handleDiscountFilter(20)" class="accent-myntraPink w-4 h-4">
+                                    <span class="ml-2.5 text-myntraGray">20% and above</span>
+                                </label>
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="radio" name="disc-radio" value="35" onchange="handleDiscountFilter(35)" class="accent-myntraPink w-4 h-4">
+                                    <span class="ml-2.5 text-myntraGray">35% and above</span>
+                                </label>
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="radio" name="disc-radio" value="45" onchange="handleDiscountFilter(45)" class="accent-myntraPink w-4 h-4">
+                                    <span class="ml-2.5 text-myntraGray">45% and above</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Product Grid Area -->
+                <div class="flex-1">
+                    <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+                        <!-- Cards dynamically injected here -->
+                    </div>
+
+                    <!-- Empty State when no products match -->
+                    <div id="empty-catalog-state" class="hidden text-center py-20 px-4">
+                        <div class="w-20 h-20 rounded-full bg-myntraLight flex items-center justify-center mx-auto mb-4 text-myntraGray">
+                            <i class="fa-solid fa-shirt text-3xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-myntraDark">No matching Indian apparel found</h3>
+                        <p class="text-sm text-myntraGray mt-1 max-w-md mx-auto">We couldn't find any outfits matching your current brand or price filters. Try resetting filters to explore all 10 Indian brands.</p>
+                        <button onclick="clearAllFilters()" class="mt-5 bg-myntraPink text-white font-bold text-xs uppercase tracking-wider px-6 py-3 rounded shadow hover:bg-myntraPinkHover transition">
+                            Reset All Filters
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- PRODUCT QUICK-VIEW MODAL -->
+    <div id="quick-view-modal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-lg max-w-4xl w-full overflow-hidden shadow-2xl relative my-8 animate-fadeIn">
+            <button onclick="closeQuickView()" class="absolute top-4 right-4 z-10 w-9 h-9 rounded-full bg-white/90 hover:bg-gray-100 text-myntraDark flex items-center justify-center shadow">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div id="quick-view-content" class="grid grid-cols-1 md:grid-cols-12">
+                <!-- Populated dynamically via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE-OUT WISHLIST DRAWER -->
+    <div id="wishlist-drawer-backdrop" onclick="toggleWishlistDrawer(false)" class="fixed inset-0 bg-black/50 z-50 hidden transition-opacity"></div>
+    <aside id="wishlist-drawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
+        <div class="p-5 border-b border-gray-200 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-heart text-myntraPink text-lg"></i>
+                <h2 class="font-extrabold text-base uppercase tracking-wider text-myntraDark">My Wishlist <span id="wishlist-drawer-count" class="text-myntraGray font-normal">(0)</span></h2>
+            </div>
+            <button onclick="toggleWishlistDrawer(false)" class="text-gray-400 hover:text-myntraDark p-1">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+        </div>
+        <div id="wishlist-items-container" class="flex-1 overflow-y-auto p-5 space-y-4">
+            <!-- Populated via JS -->
+        </div>
+    </aside>
+
+    <!-- SLIDE-OUT SHOPPING BAG (CART) DRAWER -->
+    <div id="bag-drawer-backdrop" onclick="toggleBagDrawer(false)" class="fixed inset-0 bg-black/50 z-50 hidden transition-opacity"></div>
+    <aside id="bag-drawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
+        <!-- Drawer Header -->
+        <div class="p-5 border-b border-gray-200 flex items-center justify-between bg-white">
+            <div class="flex items-center gap-2.5">
+                <i class="fa-solid fa-bag-shopping text-myntraPink text-lg"></i>
+                <div>
+                    <h2 class="font-extrabold text-base uppercase tracking-wider text-myntraDark">Shopping Bag <span id="bag-drawer-count" class="text-myntraGray font-normal">(0 Items)</span></h2>
+                    <p class="text-[11px] text-myntraTeal font-bold"><i class="fa-solid fa-shield-halved mr-1"></i>100% Authentic Indian Craftsmanship</p>
+                </div>
+            </div>
+            <button onclick="toggleBagDrawer(false)" class="text-gray-400 hover:text-myntraDark p-1">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Scrollable Bag Content -->
+        <div id="bag-items-container" class="flex-1 overflow-y-auto p-4 space-y-4 bg-myntraLight/60">
+            <!-- Populated via JS -->
+        </div>
+
+        <!-- Bag Footer: Coupon + Price Breakdown + Checkout CTA -->
+        <div id="bag-footer" class="border-t border-gray-200 bg-white p-5 space-y-4">
+            <!-- Coupon Input -->
+            <div>
+                <div class="flex items-center justify-between text-xs mb-1.5">
+                    <span class="font-bold uppercase text-myntraDark"><i class="fa-solid fa-tag text-myntraPink mr-1"></i> Apply Coupon</span>
+                    <button onclick="applyCouponCode('DESI20')" class="text-[11px] font-bold text-myntraPink hover:underline">Tap to apply DESI20</button>
+                </div>
+                <div class="flex gap-2">
+                    <input 
+                        type="text" 
+                        id="coupon-input" 
+                        placeholder="Enter coupon code (e.g. DESI20)" 
+                        class="flex-1 border border-gray-300 rounded px-3 py-2 text-xs uppercase font-bold tracking-wider focus:outline-none focus:border-myntraPink"
+                    >
+                    <button onclick="applyCouponCode()" class="bg-myntraDark hover:bg-black text-white font-bold text-xs uppercase px-4 py-2 rounded transition">
+                        Apply
+                    </button>
+                </div>
+                <p id="coupon-feedback" class="text-[11px] mt-1 font-semibold hidden"></p>
+            </div>
+
+            <!-- Price Breakdown Box -->
+            <div id="bag-price-breakdown" class="text-xs space-y-2 border-t border-gray-100 pt-3">
+                <!-- Populated via JS -->
+            </div>
+
+            <button onclick="openCheckoutModal()" class="w-full bg-myntraPink hover:bg-myntraPinkHover text-white font-extrabold text-sm uppercase tracking-wider py-3.5 rounded shadow-lg transition flex items-center justify-center gap-2">
+                <span>Proceed to Order Form</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+    </aside>
+
+    <!-- COMPREHENSIVE CHECKOUT & ORDER FORM MODAL -->
+    <div id="checkout-modal" class="fixed inset-0 z-50 hidden bg-black/65 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+        <div class="bg-white rounded-lg max-w-5xl w-full overflow-hidden shadow-2xl relative my-auto max-h-[92vh] flex flex-col">
+            
+            <!-- Modal Top Progress Header -->
+            <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between bg-myntraLight/50">
+                <div class="flex items-center gap-2">
+                    <div class="w-7 h-7 rounded bg-myntraPink text-white font-black text-sm flex items-center justify-center">B</div>
+                    <span class="font-extrabold text-lg text-myntraDark">BharatStyle Secure Checkout</span>
+                </div>
+                <div class="hidden sm:flex items-center space-x-3 text-xs font-bold uppercase tracking-wider">
+                    <span class="text-myntraTeal"><i class="fa-solid fa-circle-check mr-1"></i>Bag</span>
+                    <span class="text-gray-300">———</span>
+                    <span id="step-indicator-form" class="text-myntraPink border-b-2 border-myntraPink pb-0.5">Address & Payment</span>
+                    <span class="text-gray-300">———</span>
+                    <span id="step-indicator-confirm" class="text-gray-400">Confirmation</span>
+                </div>
+                <button onclick="closeCheckoutModal()" class="text-gray-400 hover:text-myntraDark p-1">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body (Form vs Order Confirmation) -->
+            <div id="checkout-modal-body" class="flex-1 overflow-y-auto p-6">
+                <!-- Populated dynamically via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-myntraLight border-t border-gray-200 mt-16 text-myntraGray text-xs">
+        <div class="max-w-[1440px] mx-auto py-12 px-4 sm:px-6 lg:px-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+            <div>
+                <div class="flex items-center mb-3">
+                    <div class="w-7 h-7 rounded bg-myntraPink text-white font-black text-base flex items-center justify-center mr-2">B</div>
+                    <span class="font-extrabold text-lg text-myntraDark">Bharat<span class="text-myntraPink">Style</span></span>
+                </div>
+                <p class="leading-relaxed">India's dedicated fashion destination celebrating 100% homegrown Indian clothing brands, artisan handlooms, and contemporary tailoring.</p>
+                <div class="mt-4 flex items-center gap-3 text-myntraDark text-base">
+                    <i class="fa-brands fa-instagram hover:text-myntraPink cursor-pointer"></i>
+                    <i class="fa-brands fa-facebook hover:text-myntraPink cursor-pointer"></i>
+                    <i class="fa-brands fa-youtube hover:text-myntraPink cursor-pointer"></i>
+                    <i class="fa-brands fa-x-twitter hover:text-myntraPink cursor-pointer"></i>
+                </div>
+            </div>
+            <div>
+                <h4 class="font-extrabold uppercase text-myntraDark tracking-wider mb-3">Indian Brands</h4>
+                <ul class="space-y-2">
+                    <li><button onclick="toggleBrandFilter('Fabindia'); scrollToCatalog();" class="hover:text-myntraPink">Fabindia</button></li>
+                    <li><button onclick="toggleBrandFilter('Manyavar'); scrollToCatalog();" class="hover:text-myntraPink">Manyavar</button></li>
+                    <li><button onclick="toggleBrandFilter('Biba'); scrollToCatalog();" class="hover:text-myntraPink">Biba</button></li>
+                    <li><button onclick="toggleBrandFilter('Raymond'); scrollToCatalog();" class="hover:text-myntraPink">Raymond</button></li>
+                    <li><button onclick="toggleBrandFilter('House of Pataudi'); scrollToCatalog();" class="hover:text-myntraPink">House of Pataudi</button></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-extrabold uppercase text-myntraDark tracking-wider mb-3">More Labels</h4>
+                <ul class="space-y-2">
+                    <li><button onclick="toggleBrandFilter('W for Woman'); scrollToCatalog();" class="hover:text-myntraPink">W for Woman</button></li>
+                    <li><button onclick="toggleBrandFilter('Peter England'); scrollToCatalog();" class="hover:text-myntraPink">Peter England</button></li>
+                    <li><button onclick="toggleBrandFilter('Aurelia'); scrollToCatalog();" class="hover:text-myntraPink">Aurelia</button></li>
+                    <li><button onclick="toggleBrandFilter('Global Desi'); scrollToCatalog();" class="hover:text-myntraPink">Global Desi</button></li>
+                    <li><button onclick="toggleBrandFilter('Soch'); scrollToCatalog();" class="hover:text-myntraPink">Soch</button></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-extrabold uppercase text-myntraDark tracking-wider mb-3">Customer Promise</h4>
+                <div class="space-y-3">
+                    <div class="flex items-start gap-2.5">
+                        <i class="fa-solid fa-certificate text-myntraTeal text-base mt-0.5"></i>
+                        <span><strong>100% ORIGINAL</strong> guarantee for all Indian brand merchandise</span>
+                    </div>
+                    <div class="flex items-start gap-2.5">
+                        <i class="fa-solid fa-rotate-left text-myntraPink text-base mt-0.5"></i>
+                        <span><strong>Easy 14 days</strong> returns and instant size exchanges</span>
+                    </div>
+                    <div class="flex items-start gap-2.5">
+                        <i class="fa-solid fa-truck-fast text-amber-600 text-base mt-0.5"></i>
+                        <span><strong>Express Pan-India</strong> delivery across 19,000+ pincodes</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-gray-200 py-4 text-center text-[11px] text-gray-500">
+            &copy; 2026 BharatStyle Marketplace Pvt. Ltd. Exclusively showcasing Indian Origin Apparel Brands.
+        </div>
+    </footer>
+
+    <!-- Floating Toast Notification -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 bg-myntraDark text-white px-5 py-3 rounded shadow-xl flex items-center gap-3 text-xs font-bold tracking-wide transition-all duration-300 toast-enter pointer-events-none">
+        <i id="toast-icon" class="fa-solid fa-circle-check text-myntraTeal text-base"></i>
+        <span id="toast-message">Added to Bag</span>
+    </div>
+
+    <!-- APPLICATION SCRIPT -->
+    <script>
+        // ==========================================
+        // 1. INDIAN BRANDS & PRODUCT CATALOG DATA
+        // ==========================================
+        const INDIAN_BRANDS = [
+            "Fabindia",
+            "Manyavar",
+            "Biba",
+            "Raymond",
+            "W for Woman",
+            "Peter England",
+            "Aurelia",
+            "House of Pataudi",
+            "Global Desi",
+            "Soch"
+        ];
+
+        const INDIAN_STATES = [
+            "Andhra Pradesh", "Assam", "Bihar", "Chhattisgarh", "Delhi (NCT)", "Goa", "Gujarat", 
+            "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", 
+            "Maharashtra", "Odisha", "Punjab", "Rajasthan", "Tamil Nadu", "Telangana", 
+            "Uttar Pradesh", "Uttarakhand", "West Bengal"
+        ];
+
+        const products = [
+            {
+                id: 101,
+                brand: "Fabindia",
+                title: "Pure Handblock Mulmul Cotton Straight Kurta",
+                category: "Women",
+                style: "Ethnic",
+                festive: false,
+                price: 1649,
+                mrp: 2499,
+                discount: 34,
+                rating: 4.5,
+                reviews: "2.4k",
+                sizes: ["S", "M", "L", "XL", "XXL"],
+                fabric: "100% Handwoven Mulmul Cotton | Natural Vegetable Dye",
+                care: "Gentle hand wash separately in cold water",
+                image: "https://images.unsplash.com/photo-1583391733958-d25e07fac04f?auto=format&fit=crop&w=700&q=80"
+            },
+            {
+                id: 102,
+                brand: "Manyavar",
+                title: "Royal Ivory & Gold Jacquard Silk Sherwani Set",
+                category: "Men",
+                style: "Ethnic",
+                festive: true,
+                price: 11999,
+                mrp: 19999,
+                discount: 40,
+                rating: 4.8,
+                reviews: "1.9k",
+                sizes: ["S", "M", "L", "XL", "XXL"],
+                fabric: "Art Silk Jacquard with Zari Woven Mandarin Collar & Churidar",
+                care: "Dry Clean Only",
+                image: "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?auto=format&fit=crop&w=700&q=80"
+            },
+            {
+                id: 103,
+                brand: "Biba",
+                title: "Crimson Festive Foil Print Anarkali Kurta Dupatta Set",
+                category: "Women",
+                style: "Ethnic",
+                festive: true,
+                price: 3599,
+                mrp: 5999,
+                discount: 40,
+                rating: 4.6,
+                reviews: "3.1k",
+                sizes: ["S", "M", "L", "XL"],
+                fabric: "Chanderi Silk Blend with Poly Chiffon Gold Border Dupatta",
+                care: "Dry Clean Preferred",
+                image: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=700&q=80"
+            },
+            {
+                id: 104,
+                brand: "Raymond",
+                title: "Contemporary Tailored Fit Bandhgala Jodhpuri Blazer",
+                category: "Men",
+                style: "Casual/Formal",
+                festive: true,
+                price: 5499,
+                mrp: 9999,
+                discount: 45,
+                rating: 4.7,
+                reviews: "1.5k",
+                sizes: ["M", "L", "XL", "XXL"],
+                fabric: "Premium Terry Rayon Suiting with Satin Inner Lining",
+                care: "Professional Dry Clean",
+                image: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=700&q=80"
+            },
+            {
+                id: 105,
+                brand: "W for Woman",
+                title: "Geometric Botanical Printed Mandarin Collar Work Kurta",
+                category: "Women",
+                style: "Casual/Formal",
+                festive: false,
+                price: 1199,
+                mrp: 1999,
+                discount: 40,
+                rating: 4.3,
+                reviews: "1.8k",
+                sizes: ["S", "M", "L", "XL", "XXL"],
+                fabric: "Breathable Liva Certified Viscose Rayon",
+                care: "Machine wash cold",
+                image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=700&q=80"
+            },
+            {
+                id: 106,
+                brand: "Peter England",
+                title: "Indigo Dobby Textured Slim Fit Pure Cotton Formal Shirt",
+                category: "Men",
+                style: "Casual/Formal",
+                festive: false,
+                price: 1149,
+                mrp: 1999,
+                discount: 43,
+                rating: 4.4,
+                reviews: "4.2k",
+                sizes: ["S", "M", "L", "XL", "XXL"],
+                fabric: "100% Rich Combed Giza Cotton",
+                care: "Machine wash warm",
+                image: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=700&q=80"
+            },
+            {
+                id: 107,
+                brand: "Aurelia",
+                title: "Mustard Gold Zari Embroidered Straight Kurta & Palazzo",
+                category: "Women",
+                style: "Ethnic",
+                festive: true,
+                price: 1799,
+                mrp: 3299,
+                discount: 45,
+                rating: 4.4,
+                reviews: "2.1k",
+                sizes: ["S", "M", "L", "XL"],
+                fabric: "Cotton Silk Blend with Resham Thread Work",
+                care: "Hand wash gently",
+                image: "https://images.unsplash.com/photo-1609357605129-26f69add5d6e?auto=format&fit=crop&w=700&q=80"
+            },
+            {
+                id: 108,
+                brand: "House of Pataudi",
+                title: "Jashn Emerald Green Chikankari & Sequin Embroidered Kurta",
+                category: "Men",
+                style: "Ethnic",
+                festive: true,
+                price: 2399,
+                mrp: 4599,
+                discount: 48,
+                rating: 4.6,
+                reviews: "980",
+                sizes: ["S", "M", "L", "XL", "XXL"],
+                fabric: "Georgette Viscose Blend with Lucknowi Thread Embroidery",
+                care: "Dry Clean Only",
+                image: "https://images.unsplash.com/photo-1617137984095-74e4e5e3613f?auto=format&fit=crop&w=700&q=80"
+            },
+            {
+                id: 109,
+                brand: "Global Desi",
+                title: "Boho Indigo Bandhani Print Flared Fusion Midi Dress",
+                category: "Women",
+                style: "Casual/Formal",
+                festive: false,
+                price: 1899,
+                mrp: 3199,
+                discount: 41,
+                rating: 4.5,
+                reviews: "1.1k",
+                sizes: ["S", "M", "L", "XL"],
+                fabric: "Soft Crinkle Viscose Crepe with Tassel Tie-Up",
+                care: "Machine wash delicate cycle",
+                image: "https://images.unsplash.com/photo-1539008835657-9e8e9680c956?auto=format&fit=crop&w=700&q=80"
+            },
+            {
+                id: 110,
+                brand: "Soch",
+                title: "Royal Kanjeevaram Woven Zari Pure Silk Festive Saree",
+                category: "Women",
+                style: "Ethnic",
+                festive: true,
+                price: 4999,
+                mrp: 8999,
+                discount: 44,
+                rating: 4.8,
+                reviews: "2.7k",
+                sizes: ["S", "M", "L", "XL", "XXL"],
+                fabric: "Kanjeevaram Art Silk with Unstitched Brocade Blouse Piece",
+                care: "Dry Clean Only",
+                image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=700&q=80"
+            },
+            {
+                id: 111,
+                brand: "Fabindia",
+                title: "Men Tussar Silk Blend Handloom Nehru Modi Jacket",
+                category: "Men",
+                style: "Ethnic",
+                festive: true,
+                price: 2799,
+                mrp: 3999,
+                discount: 30,
+                rating: 4.6,
+                reviews: "1.3k",
+                sizes: ["S", "M", "L", "XL", "XXL"],
+                fabric: "Handspun Tussar Ghicha Silk with Cotton Lining",
+                care: "Dry Clean Only",
+                image: "https://images.unsplash.com/photo-1550614000-4b95dd24508e?auto=format&fit=crop&w=700&q=80"
+            },
+            {
+                id: 112,
+                brand: "Manyavar",
+                title: "Saffron Festive Printed Kurta with White Churidar Pyjama",
+                category: "Men",
+                style: "Ethnic",
+                festive: true,
+                price: 2999,
+                mrp: 4999,
+                discount: 40,
+                rating: 4.7,
+                reviews: "2.2k",
+                sizes: ["S", "M", "L", "XL"],
+                fabric: "Dupion Silk Blend with Antiqued Metal Buttons",
+                care: "Dry Clean Only",
+                image: "https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?auto=format&fit=crop&w=700&q=80"
+            },
+            {
+                id: 113,
+                brand: "Raymond",
+                title: "Classic Charcoal Grey Superfine Wool Blend Formal Trousers",
+                category: "Men",
+                style: "Casual/Formal",
+                festive: false,
+                price: 1699,
+                mrp: 2999,
+                discount: 43,
+                rating: 4.5,
+                reviews: "3.4k",
+                sizes: ["M", "L", "XL", "XXL"],
+                fabric: "Poly-Viscose Superfine Merino Blend",
+                care: "Machine Wash Cold / Gentle Iron",
+                image: "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?auto=format&fit=crop&w=700&q=80"
+            },
+            {
+                id: 114,
+                brand: "House of Pataudi",
+                title: "Rozana Regal Maroon Velvet Zardozi Work Kurta Set",
+                category: "Women",
+                style: "Ethnic",
+                festive: true,
+                price: 3899,
+                mrp: 7499,
+                discount: 48,
+                rating: 4.7,
+                reviews: "1.6k",
+                sizes: ["S", "M", "L", "XL"],
+                fabric: "Micro Silk Velvet with Organza Scalloped Dupatta",
+                care: "Dry Clean Only",
+                image: "https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=700&q=80"
+            },
+            {
+                id: 115,
+                brand: "Peter England",
+                title: "Olive Khadi Linen Blend Casual Mandarin Collar Shirt",
+                category: "Men",
+                style: "Casual/Formal",
+                festive: false,
+                price: 1099,
+                mrp: 1999,
+                discount: 45,
+                rating: 4.3,
+                reviews: "2.8k",
+                sizes: ["S", "M", "L", "XL", "XXL"],
+                fabric: "Breathable Cotton Linen Khadi Weave",
+                care: "Machine Wash",
+                image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=700&q=80"
+            },
+            {
+                id: 116,
+                brand: "Soch",
+                title: "Peacock Teal Mirror Work Georgette Lehenga Choli Set",
+                category: "Women",
+                style: "Ethnic",
+                festive: true,
+                price: 6999,
+                mrp: 12999,
+                discount: 46,
+                rating: 4.9,
+                reviews: "890",
+                sizes: ["S", "M", "L", "XL"],
+                fabric: "Heavy Faux Georgette with Real Foil Mirror Embroidery",
+                care: "Specialist Dry Clean Only",
+                image: "https://images.unsplash.com/photo-1518895949257-7621c3c786d7?auto=format&fit=crop&w=700&q=80"
+            }
+        ];
+
+        // ==========================================
+        // 2. APPLICATION STATE
+        // ==========================================
+        let state = {
+            category: 'All',          // All, Men, Women, Ethnic, Festive
+            style: 'All',             // All, Ethnic, Casual/Formal
+            selectedBrands: [],       // Array of brand names
+            maxPrice: 15000,
+            minDiscount: 0,
+            searchQuery: '',
+            sortBy: 'popularity',
+            selectedSizesOnCard: {},  // { [productId]: 'M' }
+            wishlist: [102, 110],     // Pre-populated sample wishlist IDs
+            bag: [
+                { productId: 101, size: 'M', qty: 1 },
+                { productId: 103, size: 'L', qty: 1 }
+            ],
+            couponApplied: null,      // 'DESI20'
+            deliveryType: 'standard', // 'standard' (Free) or 'express' (₹99)
+            paymentMethod: 'upi'      // 'upi', 'card', 'netbanking', 'cod'
+        };
+
+        // ==========================================
+        // 3. HELPER & FORMATTING FUNCTIONS
+        // ==========================================
+        const formatINR = (amount) => {
+            return '₹' + Math.round(amount).toLocaleString('en-IN');
+        };
+
+        let toastTimer = null;
+        const showToast = (message, iconClass = 'fa-circle-check text-myntraTeal') => {
+            const toast = document.getElementById('toast');
+            const icon = document.getElementById('toast-icon');
+            const msg = document.getElementById('toast-message');
+            icon.className = `fa-solid ${iconClass} text-base`;
+            msg.textContent = message;
+
+            toast.classList.remove('toast-enter');
+            toast.classList.add('toast-active');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                toast.classList.remove('toast-active');
+                toast.classList.add('toast-enter');
+            }, 2600);
+        };
+
+        const copyCoupon = (code) => {
+            const temp = document.createElement('textarea');
+            temp.value = code;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+            showToast(`Coupon ${code} copied! Apply it in your Shopping Bag.`, 'fa-tag text-amber-400');
+        };
+
+        const scrollToCatalog = () => {
+            document.getElementById('catalog-section').scrollIntoView({ behavior: 'smooth' });
+        };
+
+        const resetToHome = () => {
+            clearAllFilters();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        // ==========================================
+        // 4. FILTERING & SORTING ENGINE
+        // ==========================================
+        const getFilteredProducts = () => {
+            return products.filter(p => {
+                // Category match
+                if (state.category === 'Men' && p.category !== 'Men') return false;
+                if (state.category === 'Women' && p.category !== 'Women') return false;
+                if (state.category === 'Ethnic' && p.style !== 'Ethnic') return false;
+                if (state.category === 'Festive' && !p.festive) return false;
+
+                // Style sub-pill match
+                if (state.style !== 'All' && p.style !== state.style) return false;
+
+                // Brand match
+                if (state.selectedBrands.length > 0 && !state.selectedBrands.includes(p.brand)) return false;
+
+                // Price match
+                if (p.price > state.maxPrice) return false;
+
+                // Discount match
+                if (p.discount < state.minDiscount) return false;
+
+                // Live Search match
+                if (state.searchQuery.trim() !== '') {
+                    const q = state.searchQuery.toLowerCase();
+                    const matchBrand = p.brand.toLowerCase().includes(q);
+                    const matchTitle = p.title.toLowerCase().includes(q);
+                    const matchCat = p.category.toLowerCase().includes(q) || p.style.toLowerCase().includes(q);
+                    if (!matchBrand && !matchTitle && !matchCat) return false;
+                }
+
+                return true;
+            }).sort((a, b) => {
+                if (state.sortBy === 'price-asc') return a.price - b.price;
+                if (state.sortBy === 'price-desc') return b.price - a.price;
+                if (state.sortBy === 'discount') return b.discount - a.discount;
+                if (state.sortBy === 'rating') return b.rating - a.rating;
+                return b.festive - a.festive; // default popularity
+            });
+        };
+
+        // Filter Actions
+        const setCategoryFilter = (cat) => {
+            state.category = cat;
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+            const activeNav = document.getElementById(`nav-${cat}`);
+            if (activeNav) activeNav.classList.add('active');
+
+            document.querySelectorAll('input[name="cat-radio"]').forEach(r => {
+                r.checked = (r.value === cat);
+            });
+            renderAllCatalogUI();
+        };
+
+        const setStyleFilter = (style) => {
+            state.style = style;
+            ['All', 'Ethnic', 'Casual/Formal'].forEach(s => {
+                const btn = document.getElementById(`style-${s}`);
+                if (!btn) return;
+                if (s === style) {
+                    btn.className = "px-3 py-1.5 rounded bg-white text-myntraDark shadow-sm transition";
+                } else {
+                    btn.className = "px-3 py-1.5 rounded text-myntraGray hover:text-myntraDark transition";
+                }
+            });
+            renderAllCatalogUI();
+        };
+
+        const toggleBrandFilter = (brand) => {
+            const idx = state.selectedBrands.indexOf(brand);
+            if (idx > -1) {
+                state.selectedBrands.splice(idx, 1);
+            } else {
+                state.selectedBrands.push(brand);
+            }
+            renderAllCatalogUI();
+        };
+
+        const handlePriceFilter = (val) => {
+            state.maxPrice = Number(val);
+            document.getElementById('price-slider-label').textContent = `Up to ${formatINR(state.maxPrice)}`;
+            renderAllCatalogUI();
+        };
+
+        const handleDiscountFilter = (minDisc) => {
+            state.minDiscount = Number(minDisc);
+            renderAllCatalogUI();
+        };
+
+        const handleSearch = (query) => {
+            state.searchQuery = query;
+            const clearBtn = document.getElementById('clear-search-btn');
+            if (query.trim().length > 0) {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+            renderAllCatalogUI();
+        };
+
+        const clearSearch = () => {
+            state.searchQuery = '';
+            document.getElementById('search-input').value = '';
+            const mobInput = document.getElementById('mobile-search-input');
+            if (mobInput) mobInput.value = '';
+            document.getElementById('clear-search-btn').classList.add('hidden');
+            renderAllCatalogUI();
+        };
+
+        const handleSort = (sortVal) => {
+            state.sortBy = sortVal;
+            renderAllCatalogUI();
+        };
+
+        const clearAllFilters = () => {
+            state.category = 'All';
+            state.style = 'All';
+            state.selectedBrands = [];
+            state.maxPrice = 15000;
+            state.minDiscount = 0;
+            state.searchQuery = '';
+            document.getElementById('price-range-slider').value = 15000;
+            document.getElementById('price-slider-label').textContent = 'Up to ₹15,000';
+            document.getElementById('search-input').value = '';
+            document.getElementById('clear-search-btn').classList.add('hidden');
+            document.querySelectorAll('input[name="disc-radio"]')[0].checked = true;
+            setCategoryFilter('All');
+            setStyleFilter('All');
+        };
+
+        const toggleMobileFilters = () => {
+            const sidebar = document.getElementById('filter-sidebar');
+            sidebar.classList.toggle('hidden');
+        };
+
+        // ==========================================
+        // 5. RENDERING CATALOG, SIDEBAR & PILLS
+        // ==========================================
+        const renderBrandFiltersUI = () => {
+            // Top horizontal brand pills
+            const topPillsContainer = document.getElementById('top-brand-pills');
+            let pillsHTML = `<span class="text-xs font-extrabold uppercase tracking-wider text-myntraGray mr-2 whitespace-nowrap"><i class="fa-solid fa-crown text-amber-500 mr-1"></i>Swadeshi Labels:</span>`;
+            INDIAN_BRANDS.forEach(brand => {
+                const isSelected = state.selectedBrands.includes(brand);
+                pillsHTML += `
+                    <button 
+                        onclick="toggleBrandFilter('${brand}')" 
+                        class="px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap border transition ${
+                            isSelected 
+                                ? 'bg-myntraPink text-white border-myntraPink shadow-xs' 
+                                : 'bg-white text-myntraDark border-gray-300 hover:border-myntraPink'
+                        }"
+                    >
+                        ${brand} ${isSelected ? '<i class="fa-solid fa-xmark ml-1"></i>' : ''}
+                    </button>
+                `;
+            });
+            topPillsContainer.innerHTML = pillsHTML;
+
+            // Sidebar checkboxes with product counts
+            const sidebarBrands = document.getElementById('sidebar-brands-list');
+            sidebarBrands.innerHTML = INDIAN_BRANDS.map(brand => {
+                const count = products.filter(p => p.brand === brand).length;
+                const checked = state.selectedBrands.includes(brand) ? 'checked' : '';
+                return `
+                    <label class="flex items-center justify-between cursor-pointer group">
+                        <div class="flex items-center">
+                            <input type="checkbox" ${checked} onchange="toggleBrandFilter('${brand}')" class="accent-myntraPink w-4 h-4 rounded cursor-pointer">
+                            <span class="ml-2.5 text-myntraDark group-hover:text-myntraPink font-medium transition">${brand}</span>
+                        </div>
+                        <span class="text-xs text-gray-400">(${count})</span>
+                    </label>
+                `;
+            }).join('');
+        };
+
+        const renderActiveFilterChips = () => {
+            const container = document.getElementById('active-filter-chips');
+            let chips = [];
+
+            if (state.category !== 'All') {
+                chips.push(`<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-myntraDark">Dept: ${state.category} <button onclick="setCategoryFilter('All')" class="hover:text-myntraPink"><i class="fa-solid fa-xmark"></i></button></span>`);
+            }
+            if (state.style !== 'All') {
+                chips.push(`<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-myntraDark">Style: ${state.style} <button onclick="setStyleFilter('All')" class="hover:text-myntraPink"><i class="fa-solid fa-xmark"></i></button></span>`);
+            }
+            state.selectedBrands.forEach(b => {
+                chips.push(`<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-50 text-myntraPink border border-rose-200">${b} <button onclick="toggleBrandFilter('${b}')" class="hover:text-black"><i class="fa-solid fa-xmark"></i></button></span>`);
+            });
+            if (state.maxPrice < 15000) {
+                chips.push(`<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-myntraDark">Under ${formatINR(state.maxPrice)} <button onclick="handlePriceFilter(15000); document.getElementById('price-range-slider').value=15000;" class="hover:text-myntraPink"><i class="fa-solid fa-xmark"></i></button></span>`);
+            }
+            if (state.minDiscount > 0) {
+                chips.push(`<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-myntraDark">${state.minDiscount}%+ Off <button onclick="handleDiscountFilter(0)" class="hover:text-myntraPink"><i class="fa-solid fa-xmark"></i></button></span>`);
+            }
+            container.innerHTML = chips.join('');
+        };
+
+        const selectSizeOnCard = (productId, size) => {
+            state.selectedSizesOnCard[productId] = size;
+            renderProductGrid();
+        };
+
+        const renderProductGrid = () => {
+            const filtered = getFilteredProducts();
+            const grid = document.getElementById('product-grid');
+            const emptyState = document.getElementById('empty-catalog-state');
+
+            // Update headers
+            document.getElementById('breadcrumb-category').textContent = state.category === 'All' ? 'All Indian Apparel' : `${state.category} Wear`;
+            document.getElementById('heading-category').textContent = state.category === 'All' ? 'Authentic Indian Clothing Brands' : `${state.category} Collection`;
+            document.getElementById('product-count-label').textContent = `- ${filtered.length} ${filtered.length === 1 ? 'item' : 'items'}`;
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            emptyState.classList.add('hidden');
+
+            grid.innerHTML = filtered.map(product => {
+                const isWishlisted = state.wishlist.includes(product.id);
+                const selectedSize = state.selectedSizesOnCard[product.id] || product.sizes[1] || product.sizes[0];
+                
+                return `
+                    <div class="product-card bg-white rounded-md overflow-hidden border border-gray-100 hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition duration-300 flex flex-col group">
+                        <!-- Image Container -->
+                        <div class="relative aspect-[3/4] w-full bg-gray-100 overflow-hidden">
+                            <img 
+                                src="${product.image}" 
+                                alt="${product.title}" 
+                                onclick="openQuickView(${product.id})"
+                                onerror="this.src='https://placehold.co/600x800/f5f5f6/282c3f?text=${encodeURIComponent(product.brand)}'"
+                                class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500 cursor-pointer"
+                            >
+                            
+                            <!-- Festive Badge -->
+                            ${product.festive ? `
+                                <span class="absolute top-2.5 left-2.5 bg-gradient-to-r from-amber-500 to-rose-600 text-white text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded shadow">
+                                    Festive Edit
+                                </span>
+                            ` : ''}
+
+                            <!-- Wishlist Heart Button -->
+                            <button 
+                                onclick="toggleWishlist(${product.id})" 
+                                title="Wishlist"
+                                class="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/90 hover:bg-white flex items-center justify-center shadow transition"
+                            >
+                                <i class="${isWishlisted ? 'fa-solid text-myntraPink' : 'fa-regular text-myntraDark'} fa-heart text-sm"></i>
+                            </button>
+
+                            <!-- Rating Pill Bottom-Left -->
+                            <div class="absolute bottom-2.5 left-2.5 bg-white/90 backdrop-blur-xs px-2 py-0.5 rounded text-[11px] font-bold text-myntraDark flex items-center gap-1 shadow-xs">
+                                <span>${product.rating}</span>
+                                <i class="fa-solid fa-star text-myntraTeal text-[9px]"></i>
+                                <span class="text-gray-300">|</span>
+                                <span class="text-myntraGray font-semibold">${product.reviews}</span>
+                            </div>
+
+                            <!-- Quick View Button Bottom-Right -->
+                            <button 
+                                onclick="openQuickView(${product.id})" 
+                                class="absolute bottom-2.5 right-2.5 bg-white/90 hover:bg-myntraDark hover:text-white text-myntraDark text-[11px] font-bold px-2.5 py-1 rounded shadow-xs transition"
+                            >
+                                <i class="fa-regular fa-eye mr-1"></i>Quick View
+                            </button>
+                        </div>
+
+                        <!-- Card Details -->
+                        <div class="p-3.5 flex flex-col flex-1">
+                            <div class="flex items-center justify-between">
+                                <h3 class="font-extrabold text-sm text-myntraDark uppercase tracking-wide">${product.brand}</h3>
+                                <span class="text-[10px] font-semibold text-myntraGray bg-myntraLight px-1.5 py-0.5 rounded">${product.style}</span>
+                            </div>
+                            <p onclick="openQuickView(${product.id})" class="text-xs text-myntraGray truncate mt-0.5 cursor-pointer hover:text-myntraDark" title="${product.title}">${product.title}</p>
+
+                            <!-- Price Row -->
+                            <div class="mt-2 flex items-baseline gap-1.5">
+                                <span class="font-extrabold text-sm text-myntraDark">${formatINR(product.price)}</span>
+                                <span class="text-xs text-gray-400 line-through">${formatINR(product.mrp)}</span>
+                                <span class="text-xs font-bold text-myntraOrange">(${product.discount}% OFF)</span>
+                            </div>
+
+                            <!-- Size Selector Pills -->
+                            <div class="mt-3 pt-2.5 border-t border-gray-100">
+                                <div class="flex items-center justify-between mb-1.5">
+                                    <span class="text-[10px] font-bold uppercase text-myntraGray">Select Size:</span>
+                                    <button onclick="openQuickView(${product.id})" class="text-[10px] font-bold text-myntraPink hover:underline">Size Chart</button>
+                                </div>
+                                <div class="flex items-center gap-1.5 flex-wrap">
+                                    ${product.sizes.map(sz => `
+                                        <button 
+                                            onclick="selectSizeOnCard(${product.id}, '${sz}')"
+                                            class="w-7 h-7 rounded-full text-[11px] font-bold border transition flex items-center justify-center ${
+                                                selectedSize === sz 
+                                                    ? 'border-myntraPink bg-myntraPink/10 text-myntraPink' 
+                                                    : 'border-gray-300 text-myntraDark hover:border-myntraDark'
+                                            }"
+                                        >
+                                            ${sz}
+                                        </button>
+                                    `).join('')}
+                                </div>
+                            </div>
+
+                            <!-- Add to Bag CTA -->
+                            <button 
+                                onclick="addToBag(${product.id}, '${selectedSize}')" 
+                                class="mt-3.5 w-full bg-myntraPink hover:bg-myntraPinkHover text-white font-bold text-xs uppercase tracking-wider py-2.5 rounded transition flex items-center justify-center gap-2 shadow-xs"
+                            >
+                                <i class="fa-solid fa-bag-shopping"></i>
+                                <span>Add to Bag</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        };
+
+        const renderAllCatalogUI = () => {
+            renderBrandFiltersUI();
+            renderActiveFilterChips();
+            renderProductGrid();
+        };
+
+        // ==========================================
+        // 6. PRODUCT QUICK-VIEW MODAL
+        // ==========================================
+        let quickViewSelectedSize = 'M';
+
+        const openQuickView = (productId) => {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            quickViewSelectedSize = state.selectedSizesOnCard[productId] || product.sizes[0];
+            const isWishlisted = state.wishlist.includes(product.id);
+
+            const content = document.getElementById('quick-view-content');
+            content.innerHTML = `
+                <!-- Left Image -->
+                <div class="md:col-span-5 bg-gray-100 relative min-h-[320px] md:min-h-[480px]">
+                    <img 
+                        src="${product.image}" 
+                        alt="${product.title}" 
+                        onerror="this.src='https://placehold.co/600x800/f5f5f6/282c3f?text=${encodeURIComponent(product.brand)}'"
+                        class="w-full h-full object-cover object-top"
+                    >
+                    <span class="absolute top-3 left-3 bg-myntraDark text-white text-[10px] font-bold uppercase px-2.5 py-1 rounded">
+                        ${product.brand} Official
+                    </span>
+                </div>
+
+                <!-- Right Details -->
+                <div class="md:col-span-7 p-6 sm:p-8 flex flex-col justify-between max-h-[85vh] overflow-y-auto">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-extrabold uppercase tracking-widest text-myntraPink">${product.brand}</span>
+                            <span class="text-gray-300">•</span>
+                            <span class="text-xs font-semibold text-myntraGray">${product.category} / ${product.style}</span>
+                        </div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-myntraDark mt-1">${product.title}</h2>
+
+                        <!-- Rating Box -->
+                        <div class="inline-flex items-center gap-1.5 border border-gray-200 px-2.5 py-1 rounded text-xs font-bold mt-3">
+                            <span>${product.rating}</span>
+                            <i class="fa-solid fa-star text-myntraTeal text-[10px]"></i>
+                            <span class="text-gray-300">|</span>
+                            <span class="text-myntraGray">${product.reviews} Verified Ratings</span>
+                        </div>
+
+                        <!-- Pricing -->
+                        <div class="mt-4 pt-3 border-t border-gray-100">
+                            <div class="flex items-baseline gap-2.5">
+                                <span class="text-2xl font-extrabold text-myntraDark">${formatINR(product.price)}</span>
+                                <span class="text-sm text-gray-400 line-through">MRP ${formatINR(product.mrp)}</span>
+                                <span class="text-sm font-extrabold text-myntraOrange">(${product.discount}% OFF)</span>
+                            </div>
+                            <p class="text-[11px] font-bold text-myntraTeal mt-0.5">inclusive of all taxes</p>
+                        </div>
+
+                        <!-- Size Selector & Size Guide Table -->
+                        <div class="mt-5">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-xs font-extrabold uppercase tracking-wider text-myntraDark">Select Size (Indian Standard)</span>
+                                <button onclick="document.getElementById('qv-size-chart').classList.toggle('hidden')" class="text-xs font-bold text-myntraPink hover:underline">
+                                    <i class="fa-solid fa-ruler-horizontal mr-1"></i>View Size Chart
+                                </button>
+                            </div>
+                            <div class="flex gap-2.5" id="qv-size-buttons">
+                                ${product.sizes.map(sz => `
+                                    <button 
+                                        onclick="updateQuickViewSize(${product.id}, '${sz}')"
+                                        id="qv-sz-${sz}"
+                                        class="w-11 h-11 rounded-full font-extrabold text-xs border transition flex items-center justify-center ${
+                                            quickViewSelectedSize === sz 
+                                                ? 'border-myntraPink bg-myntraPink text-white shadow-sm' 
+                                                : 'border-gray-300 text-myntraDark hover:border-myntraPink'
+                                        }"
+                                    >
+                                        ${sz}
+                                    </button>
+                                `).join('')}
+                            </div>
+
+                            <!-- Collapsible Indian Size Chart -->
+                            <div id="qv-size-chart" class="hidden mt-3 bg-myntraLight p-3 rounded border border-gray-200 text-[11px]">
+                                <p class="font-bold text-myntraDark mb-1.5">Standard Indian Garment Measurements (in Inches):</p>
+                                <table class="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr class="border-b border-gray-300 text-myntraGray">
+                                            <th class="py-1">Size</th><th>Chest/Bust</th><th>Waist</th><th>Shoulder</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200 font-semibold">
+                                        <tr><td class="py-1">S</td><td>36"</td><td>32"</td><td>14.5"</td></tr>
+                                        <tr><td class="py-1">M</td><td>38"</td><td>34"</td><td>15.5"</td></tr>
+                                        <tr><td class="py-1">L</td><td>40"</td><td>36"</td><td>16.5"</td></tr>
+                                        <tr><td class="py-1">XL</td><td>42"</td><td>38"</td><td>17.5"</td></tr>
+                                        <tr><td class="py-1">XXL</td><td>44"</td><td>40"</td><td>18.5"</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="mt-6 flex gap-3">
+                            <button 
+                                onclick="addToBag(${product.id}, quickViewSelectedSize); closeQuickView();" 
+                                class="flex-1 bg-myntraPink hover:bg-myntraPinkHover text-white font-extrabold text-sm uppercase tracking-wider py-3.5 rounded shadow transition flex items-center justify-center gap-2"
+                            >
+                                <i class="fa-solid fa-bag-shopping"></i>
+                                <span>Add to Bag</span>
+                            </button>
+                            <button 
+                                onclick="toggleWishlist(${product.id}); openQuickView(${product.id});" 
+                                class="px-5 py-3.5 rounded border border-gray-300 hover:border-myntraDark font-bold text-xs uppercase tracking-wider flex items-center gap-2 transition"
+                            >
+                                <i class="${isWishlisted ? 'fa-solid text-myntraPink' : 'fa-regular'} fa-heart text-sm"></i>
+                                <span>${isWishlisted ? 'Wishlisted' : 'Wishlist'}</span>
+                            </button>
+                        </div>
+
+                        <!-- Fabric & Care Details -->
+                        <div class="mt-6 pt-4 border-t border-gray-100 text-xs space-y-1.5">
+                            <p class="font-extrabold uppercase text-myntraDark">Product Specifications</p>
+                            <p class="text-myntraGray"><strong>Fabric & Weave:</strong> ${product.fabric}</p>
+                            <p class="text-myntraGray"><strong>Wash Care:</strong> ${product.care}</p>
+                            <p class="text-myntraGray"><strong>Country of Origin:</strong> Proudly Made in India 🇮🇳</p>
+                        </div>
+
+                        <!-- Delivery Pincode Checker -->
+                        <div class="mt-5 pt-4 border-t border-gray-100">
+                            <label class="block text-xs font-extrabold uppercase text-myntraDark mb-2">
+                                <i class="fa-solid fa-truck text-myntraGray mr-1"></i> Delivery Options (Check Pincode)
+                            </label>
+                            <div class="flex gap-2 max-w-xs">
+                                <input 
+                                    type="text" 
+                                    id="qv-pincode-input" 
+                                    maxlength="6" 
+                                    placeholder="Enter 6-digit Pincode" 
+                                    class="flex-1 border border-gray-300 rounded px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-myntraPink"
+                                >
+                                <button onclick="checkQuickViewPincode()" class="text-xs font-extrabold text-myntraPink px-3 py-1.5 border border-myntraPink rounded hover:bg-myntraPink hover:text-white transition">
+                                    Check
+                                </button>
+                            </div>
+                            <p id="qv-pincode-result" class="text-xs mt-2 font-semibold hidden"></p>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('quick-view-modal').classList.remove('hidden');
+        };
+
+        const updateQuickViewSize = (productId, sz) => {
+            quickViewSelectedSize = sz;
+            state.selectedSizesOnCard[productId] = sz;
+            const product = products.find(p => p.id === productId);
+            product.sizes.forEach(s => {
+                const btn = document.getElementById(`qv-sz-${s}`);
+                if (!btn) return;
+                if (s === sz) {
+                    btn.className = "w-11 h-11 rounded-full font-extrabold text-xs border transition flex items-center justify-center border-myntraPink bg-myntraPink text-white shadow-sm";
+                } else {
+                    btn.className = "w-11 h-11 rounded-full font-extrabold text-xs border transition flex items-center justify-center border-gray-300 text-myntraDark hover:border-myntraPink";
+                }
+            });
+            renderProductGrid();
+        };
+
+        const checkQuickViewPincode = () => {
+            const val = document.getElementById('qv-pincode-input').value.trim();
+            const res = document.getElementById('qv-pincode-result');
+            res.classList.remove('hidden');
+            if (/^[1-9][0-9]{5}$/.test(val)) {
+                res.className = "text-xs mt-2 font-bold text-myntraTeal";
+                res.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i>Express 2-Day Delivery available to Pincode ${val}. Pay on Delivery eligible!`;
+            } else {
+                res.className = "text-xs mt-2 font-bold text-red-600";
+                res.innerHTML = `<i class="fa-solid fa-circle-exclamation mr-1"></i>Please enter a valid 6-digit Indian Pincode (e.g., 400001, 110001).`;
+            }
+        };
+
+        const closeQuickView = () => {
+            document.getElementById('quick-view-modal').classList.add('hidden');
+        };
+
+        // ==========================================
+        // 7. WISHLIST DRAWER LOGIC
+        // ==========================================
+        const toggleWishlist = (productId) => {
+            const idx = state.wishlist.indexOf(productId);
+            const product = products.find(p => p.id === productId);
+            if (idx > -1) {
+                state.wishlist.splice(idx, 1);
+                showToast(`Removed ${product.brand} item from Wishlist`, 'fa-heart-crack text-gray-300');
+            } else {
+                state.wishlist.push(productId);
+                showToast(`Added ${product.brand} to Wishlist`, 'fa-heart text-myntraPink');
+            }
+            updateHeaderBadges();
+            renderProductGrid();
+            renderWishlistDrawer();
+        };
+
+        const toggleWishlistDrawer = (open) => {
+            const drawer = document.getElementById('wishlist-drawer');
+            const backdrop = document.getElementById('wishlist-drawer-backdrop');
+            if (open) {
+                renderWishlistDrawer();
+                backdrop.classList.remove('hidden');
+                drawer.classList.remove('translate-x-full');
+            } else {
+                backdrop.classList.add('hidden');
+                drawer.classList.add('translate-x-full');
+            }
+        };
+
+        const renderWishlistDrawer = () => {
+            const container = document.getElementById('wishlist-items-container');
+            document.getElementById('wishlist-drawer-count').textContent = `(${state.wishlist.length})`;
+
+            if (state.wishlist.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-16">
+                        <i class="fa-regular fa-heart text-4xl text-gray-300 mb-3"></i>
+                        <p class="font-bold text-myntraDark">Your Wishlist is Empty</p>
+                        <p class="text-xs text-myntraGray mt-1">Save your favourite Indian ethnic and formal outfits here.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = state.wishlist.map(id => {
+                const p = products.find(prod => prod.id === id);
+                if (!p) return '';
+                return `
+                    <div class="flex gap-3.5 p-3 rounded-lg border border-gray-200 bg-white items-center">
+                        <img src="${p.image}" alt="${p.title}" class="w-16 h-20 object-cover rounded">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs font-extrabold uppercase text-myntraDark">${p.brand}</p>
+                            <p class="text-xs text-myntraGray truncate">${p.title}</p>
+                            <div class="flex items-baseline gap-1.5 mt-1">
+                                <span class="text-sm font-extrabold text-myntraDark">${formatINR(p.price)}</span>
+                                <span class="text-[11px] text-gray-400 line-through">${formatINR(p.mrp)}</span>
+                                <span class="text-[11px] font-bold text-myntraOrange">(${p.discount}% OFF)</span>
+                            </div>
+                            <div class="mt-2 flex gap-2">
+                                <button onclick="moveFromWishlistToBag(${p.id})" class="text-[11px] font-extrabold text-white bg-myntraPink px-3 py-1 rounded hover:bg-myntraPinkHover transition">
+                                    Move to Bag
+                                </button>
+                                <button onclick="toggleWishlist(${p.id})" class="text-[11px] font-bold text-gray-400 hover:text-red-500 px-2 py-1">
+                                    Remove
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        };
+
+        const moveFromWishlistToBag = (productId) => {
+            const p = products.find(prod => prod.id === productId);
+            const sz = state.selectedSizesOnCard[productId] || p.sizes[0];
+            addToBag(productId, sz);
+            const idx = state.wishlist.indexOf(productId);
+            if (idx > -1) state.wishlist.splice(idx, 1);
+            updateHeaderBadges();
+            renderWishlistDrawer();
+            renderProductGrid();
+        };
+
+        // ==========================================
+        // 8. SHOPPING BAG (CART) & COUPON LOGIC
+        // ==========================================
+        const addToBag = (productId, size) => {
+            const product = products.find(p => p.id === productId);
+            const finalSize = size || state.selectedSizesOnCard[productId] || product.sizes[0];
+
+            const existing = state.bag.find(item => item.productId === productId && item.size === finalSize);
+            if (existing) {
+                existing.qty += 1;
+            } else {
+                state.bag.push({ productId, size: finalSize, qty: 1 });
+            }
+
+            updateHeaderBadges();
+            renderBagDrawer();
+            showToast(`${product.brand} (${finalSize}) added to Shopping Bag!`);
+        };
+
+        const updateBagQty = (productId, size, delta) => {
+            const item = state.bag.find(i => i.productId === productId && i.size === size);
+            if (!item) return;
+            item.qty += delta;
+            if (item.qty <= 0) {
+                state.bag = state.bag.filter(i => !(i.productId === productId && i.size === size));
+            }
+            updateHeaderBadges();
+            renderBagDrawer();
+        };
+
+        const removeBagItem = (productId, size) => {
+            state.bag = state.bag.filter(i => !(i.productId === productId && i.size === size));
+            updateHeaderBadges();
+            renderBagDrawer();
+            showToast('Item removed from Shopping Bag', 'fa-trash-can text-gray-300');
+        };
+
+        const applyCouponCode = (presetCode) => {
+            const input = document.getElementById('coupon-input');
+            const feedback = document.getElementById('coupon-feedback');
+            if (presetCode) input.value = presetCode;
+            const code = input.value.trim().toUpperCase();
+
+            feedback.classList.remove('hidden');
+            if (code === 'DESI20') {
+                state.couponApplied = 'DESI20';
+                feedback.className = "text-[11px] mt-1 font-bold text-myntraTeal";
+                feedback.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i>'DESI20' applied! Extra 20% instant festival discount unlocked.`;
+                showToast('Coupon DESI20 applied successfully!', 'fa-tag text-myntraTeal');
+            } else {
+                state.couponApplied = null;
+                feedback.className = "text-[11px] mt-1 font-bold text-red-500";
+                feedback.innerHTML = `Invalid coupon. Try code: DESI20`;
+            }
+            renderBagDrawer();
+        };
+
+        const calculateBagTotals = () => {
+            let totalMRP = 0;
+            let totalSellingPrice = 0;
+            let totalItems = 0;
+
+            state.bag.forEach(item => {
+                const p = products.find(prod => prod.id === item.productId);
+                if (p) {
+                    totalMRP += p.mrp * item.qty;
+                    totalSellingPrice += p.price * item.qty;
+                    totalItems += item.qty;
+                }
+            });
+
+            const discountOnMRP = totalMRP - totalSellingPrice;
+            const couponDiscount = state.couponApplied === 'DESI20' ? Math.round(totalSellingPrice * 0.20) : 0;
+            const platformFee = totalItems > 0 ? 20 : 0;
+            const deliveryFee = (totalItems > 0 && state.deliveryType === 'express') ? 99 : 0;
+            const finalPayable = Math.max(0, totalSellingPrice - couponDiscount + platformFee + deliveryFee);
+
+            return {
+                totalItems,
+                totalMRP,
+                totalSellingPrice,
+                discountOnMRP,
+                couponDiscount,
+                platformFee,
+                deliveryFee,
+                finalPayable
+            };
+        };
+
+        const toggleBagDrawer = (open) => {
+            const drawer = document.getElementById('bag-drawer');
+            const backdrop = document.getElementById('bag-drawer-backdrop');
+            if (open) {
+                renderBagDrawer();
+                backdrop.classList.remove('hidden');
+                drawer.classList.remove('translate-x-full');
+            } else {
+                backdrop.classList.add('hidden');
+                drawer.classList.add('translate-x-full');
+            }
+        };
+
+        const renderBagDrawer = () => {
+            const container = document.getElementById('bag-items-container');
+            const footer = document.getElementById('bag-footer');
+            const breakdownEl = document.getElementById('bag-price-breakdown');
+            const totals = calculateBagTotals();
+
+            document.getElementById('bag-drawer-count').textContent = `(${totals.totalItems} ${totals.totalItems === 1 ? 'Item' : 'Items'})`;
+
+            if (state.bag.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-20 px-4">
+                        <div class="w-16 h-16 rounded-full bg-white shadow-xs flex items-center justify-center mx-auto mb-3 text-gray-300">
+                            <i class="fa-solid fa-bag-shopping text-3xl"></i>
+                        </div>
+                        <h3 class="font-bold text-base text-myntraDark">Hey, it feels so light!</h3>
+                        <p class="text-xs text-myntraGray mt-1">There is nothing in your bag. Let's add some authentic Indian wear.</p>
+                        <button onclick="toggleBagDrawer(false)" class="mt-5 border border-myntraPink text-myntraPink font-extrabold text-xs uppercase px-5 py-2.5 rounded hover:bg-myntraPink hover:text-white transition">
+                            Explore Indian Brands
+                        </button>
+                    </div>
+                `;
+                footer.classList.add('hidden');
+                return;
+            }
+
+            footer.classList.remove('hidden');
+
+            container.innerHTML = state.bag.map(item => {
+                const p = products.find(prod => prod.id === item.productId);
+                if (!p) return '';
+                return `
+                    <div class="bg-white p-3.5 rounded-lg border border-gray-200 shadow-2xs flex gap-3.5 relative">
+                        <button onclick="removeBagItem(${p.id}, '${item.size}')" class="absolute top-2.5 right-2.5 text-gray-400 hover:text-red-500 text-xs">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                        <img src="${p.image}" alt="${p.title}" class="w-20 h-24 object-cover rounded">
+                        <div class="flex-1 min-w-0 pr-4">
+                            <h4 class="text-xs font-extrabold uppercase text-myntraDark">${p.brand}</h4>
+                            <p class="text-xs text-myntraGray truncate">${p.title}</p>
+                            
+                            <div class="flex items-center gap-3 mt-2">
+                                <span class="bg-myntraLight text-myntraDark text-[11px] font-bold px-2 py-0.5 rounded">Size: ${item.size}</span>
+                                <div class="flex items-center border border-gray-300 rounded">
+                                    <button onclick="updateBagQty(${p.id}, '${item.size}', -1)" class="px-2 py-0.5 text-xs font-bold hover:bg-gray-100">-</button>
+                                    <span class="px-2 text-xs font-bold">${item.qty}</span>
+                                    <button onclick="updateBagQty(${p.id}, '${item.size}', 1)" class="px-2 py-0.5 text-xs font-bold hover:bg-gray-100">+</button>
+                                </div>
+                            </div>
+
+                            <div class="mt-2 flex items-baseline gap-1.5">
+                                <span class="text-sm font-extrabold text-myntraDark">${formatINR(p.price * item.qty)}</span>
+                                <span class="text-[11px] text-gray-400 line-through">${formatINR(p.mrp * item.qty)}</span>
+                                <span class="text-[11px] font-bold text-myntraOrange">${p.discount}% OFF</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            breakdownEl.innerHTML = `
+                <div class="font-extrabold uppercase text-myntraGray text-[11px] mb-1">Price Details (${totals.totalItems} Items)</div>
+                <div class="flex justify-between text-myntraGray">
+                    <span>Total MRP</span>
+                    <span>${formatINR(totals.totalMRP)}</span>
+                </div>
+                <div class="flex justify-between text-myntraGray">
+                    <span>Discount on MRP</span>
+                    <span class="text-myntraTeal font-semibold">- ${formatINR(totals.discountOnMRP)}</span>
+                </div>
+                ${totals.couponDiscount > 0 ? `
+                    <div class="flex justify-between text-myntraPink font-semibold">
+                        <span>Coupon Discount (DESI20)</span>
+                        <span>- ${formatINR(totals.couponDiscount)}</span>
+                    </div>
+                ` : ''}
+                <div class="flex justify-between text-myntraGray">
+                    <span>Platform Fee</span>
+                    <span>${formatINR(totals.platformFee)}</span>
+                </div>
+                <div class="flex justify-between font-extrabold text-sm text-myntraDark border-t border-gray-200 pt-2 mt-1">
+                    <span>Total Amount</span>
+                    <span>${formatINR(totals.totalSellingPrice - totals.couponDiscount + totals.platformFee)}</span>
+                </div>
+            `;
+        };
+
+        const updateHeaderBadges = () => {
+            const wishBadge = document.getElementById('wishlist-badge');
+            const bagBadge = document.getElementById('bag-badge');
+            const totalBagItems = state.bag.reduce((acc, i) => acc + i.qty, 0);
+
+            if (state.wishlist.length > 0) {
+                wishBadge.textContent = state.wishlist.length;
+                wishBadge.classList.remove('hidden');
+            } else {
+                wishBadge.classList.add('hidden');
+            }
+
+            if (totalBagItems > 0) {
+                bagBadge.textContent = totalBagItems;
+                bagBadge.classList.remove('hidden');
+            } else {
+                bagBadge.classList.add('hidden');
+            }
+        };
+
+        // ==========================================
+        // 9. COMPLETE ORDER CHECKOUT FORM & CONFIRMATION
+        // ==========================================
+        const openCheckoutModal = () => {
+            if (state.bag.length === 0) return;
+            toggleBagDrawer(false);
+            document.getElementById('checkout-modal').classList.remove('hidden');
+            renderCheckoutFormView();
+        };
+
+        const closeCheckoutModal = () => {
+            document.getElementById('checkout-modal').classList.add('hidden');
+        };
+
+        const selectDeliveryType = (type) => {
+            state.deliveryType = type;
+            renderCheckoutFormView(true);
+        };
+
+        const selectPaymentMethod = (method) => {
+            state.paymentMethod = method;
+            renderCheckoutFormView(true);
+        };
+
+        // Preserve user typed inputs across re-renders when toggling delivery/payment
+        const captureCurrentFormValues = () => {
+            const getVal = (id) => {
+                const el = document.getElementById(id);
+                return el ? el.value : '';
+            };
+            return {
+                fullName: getVal('chk-name') || 'Aarav Sharma',
+                mobile: getVal('chk-mobile') || '9876543210',
+                pincode: getVal('chk-pincode') || '400001',
+                address: getVal('chk-address') || 'Flat 402, Heritage Residency, MG Road',
+                city: getVal('chk-city') || 'Mumbai',
+                stateName: getVal('chk-state') || 'Maharashtra',
+                upiId: getVal('chk-upi') || 'aarav@okaxis'
+            };
+        };
+
+        const renderCheckoutFormView = (preserveInputs = false) => {
+            const saved = preserveInputs ? captureCurrentFormValues() : {
+                fullName: '', mobile: '', pincode: '', address: '', city: '', stateName: 'Maharashtra', upiId: ''
+            };
+
+            document.getElementById('step-indicator-form').className = "text-myntraPink border-b-2 border-myntraPink pb-0.5";
+            document.getElementById('step-indicator-confirm').className = "text-gray-400";
+
+            const totals = calculateBagTotals();
+            const modalBody = document.getElementById('checkout-modal-body');
+
+            modalBody.innerHTML = `
+                <form id="order-checkout-form" onsubmit="submitOrderForm(event)" class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    
+                    <!-- Left Column: Shipping Address, Delivery Speed & Payment Selector -->
+                    <div class="lg:col-span-7 space-y-6">
+                        
+                        <!-- 1. Shipping Address Card -->
+                        <div class="border border-gray-200 rounded-lg p-5 bg-white">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="font-extrabold text-sm uppercase tracking-wider text-myntraDark">
+                                    <i class="fa-solid fa-location-dot text-myntraPink mr-1.5"></i>1. Shipping Address (India)
+                                </h3>
+                                <button type="button" onclick="fillDemoAddress()" class="text-xs font-bold text-myntraPink hover:underline">
+                                    Auto-fill Demo Address
+                                </button>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                                <div>
+                                    <label class="block font-bold text-myntraDark mb-1">Full Name *</label>
+                                    <input type="text" id="chk-name" required value="${saved.fullName}" placeholder="e.g. Aarav Sharma" class="w-full border border-gray-300 rounded px-3 py-2.5 focus:outline-none focus:border-myntraPink">
+                                </div>
+                                <div>
+                                    <label class="block font-bold text-myntraDark mb-1">10-Digit Mobile Number *</label>
+                                    <div class="flex">
+                                        <span class="inline-flex items-center px-2.5 bg-gray-100 border border-r-0 border-gray-300 rounded-l font-bold text-myntraGray">+91</span>
+                                        <input type="tel" id="chk-mobile" required pattern="[6-9][0-9]{9}" value="${saved.mobile}" placeholder="9876543210" class="w-full border border-gray-300 rounded-r px-3 py-2.5 focus:outline-none focus:border-myntraPink">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block font-bold text-myntraDark mb-1">Pincode (6 Digits) *</label>
+                                    <input type="text" id="chk-pincode" required pattern="[1-9][0-9]{5}" value="${saved.pincode}" placeholder="400001" class="w-full border border-gray-300 rounded px-3 py-2.5 focus:outline-none focus:border-myntraPink">
+                                </div>
+                                <div>
+                                    <label class="block font-bold text-myntraDark mb-1">City / District *</label>
+                                    <input type="text" id="chk-city" required value="${saved.city}" placeholder="e.g. Mumbai, Bengaluru, Jaipur" class="w-full border border-gray-300 rounded px-3 py-2.5 focus:outline-none focus:border-myntraPink">
+                                </div>
+                                <div class="sm:col-span-2">
+                                    <label class="block font-bold text-myntraDark mb-1">Address (House No, Building, Street, Locality) *</label>
+                                    <input type="text" id="chk-address" required value="${saved.address}" placeholder="Flat / House No., Society, Landmark" class="w-full border border-gray-300 rounded px-3 py-2.5 focus:outline-none focus:border-myntraPink">
+                                </div>
+                                <div class="sm:col-span-2">
+                                    <label class="block font-bold text-myntraDark mb-1">State *</label>
+                                    <select id="chk-state" required class="w-full border border-gray-300 rounded px-3 py-2.5 bg-white font-semibold focus:outline-none focus:border-myntraPink">
+                                        ${INDIAN_STATES.map(st => `<option value="${st}" ${st === saved.stateName ? 'selected' : ''}>${st}</option>`).join('')}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. Delivery Speed Selection -->
+                        <div class="border border-gray-200 rounded-lg p-5 bg-white">
+                            <h3 class="font-extrabold text-sm uppercase tracking-wider text-myntraDark mb-3">
+                                <i class="fa-solid fa-truck-fast text-myntraPink mr-1.5"></i>2. Select Delivery Speed
+                            </h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                                <div onclick="selectDeliveryType('standard')" class="p-3.5 rounded-lg border-2 cursor-pointer transition flex items-start justify-between ${state.deliveryType === 'standard' ? 'border-myntraPink bg-rose-50/40' : 'border-gray-200 hover:border-gray-300'}">
+                                    <div>
+                                        <p class="font-extrabold text-myntraDark">Standard Delivery</p>
+                                        <p class="text-myntraGray mt-0.5">Est. 4-5 Days</p>
+                                    </div>
+                                    <span class="font-extrabold text-myntraTeal uppercase">FREE</span>
+                                </div>
+                                <div onclick="selectDeliveryType('express')" class="p-3.5 rounded-lg border-2 cursor-pointer transition flex items-start justify-between ${state.deliveryType === 'express' ? 'border-myntraPink bg-rose-50/40' : 'border-gray-200 hover:border-gray-300'}">
+                                    <div>
+                                        <p class="font-extrabold text-myntraDark">Express Air Delivery ⚡</p>
+                                        <p class="text-myntraGray mt-0.5">Est. 1-2 Days Priority</p>
+                                    </div>
+                                    <span class="font-extrabold text-myntraDark">₹99</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. Payment Method Selector -->
+                        <div class="border border-gray-200 rounded-lg p-5 bg-white">
+                            <h3 class="font-extrabold text-sm uppercase tracking-wider text-myntraDark mb-3">
+                                <i class="fa-solid fa-wallet text-myntraPink mr-1.5"></i>3. Payment Method
+                            </h3>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs mb-4">
+                                <button type="button" onclick="selectPaymentMethod('upi')" class="p-3 rounded border font-bold text-center transition ${state.paymentMethod === 'upi' ? 'border-myntraPink bg-myntraPink text-white' : 'border-gray-200 text-myntraDark hover:bg-gray-50'}">
+                                    <i class="fa-solid fa-mobile-screen-button block text-base mb-1"></i> UPI (GPay/PhonePe)
+                                </button>
+                                <button type="button" onclick="selectPaymentMethod('card')" class="p-3 rounded border font-bold text-center transition ${state.paymentMethod === 'card' ? 'border-myntraPink bg-myntraPink text-white' : 'border-gray-200 text-myntraDark hover:bg-gray-50'}">
+                                    <i class="fa-regular fa-credit-card block text-base mb-1"></i> Credit / Debit Card
+                                </button>
+                                <button type="button" onclick="selectPaymentMethod('netbanking')" class="p-3 rounded border font-bold text-center transition ${state.paymentMethod === 'netbanking' ? 'border-myntraPink bg-myntraPink text-white' : 'border-gray-200 text-myntraDark hover:bg-gray-50'}">
+                                    <i class="fa-solid fa-building-columns block text-base mb-1"></i> Net Banking
+                                </button>
+                                <button type="button" onclick="selectPaymentMethod('cod')" class="p-3 rounded border font-bold text-center transition ${state.paymentMethod === 'cod' ? 'border-myntraPink bg-myntraPink text-white' : 'border-gray-200 text-myntraDark hover:bg-gray-50'}">
+                                    <i class="fa-solid fa-money-bill-wave block text-base mb-1"></i> Cash on Delivery
+                                </button>
+                            </div>
+
+                            <!-- Dynamic Sub-Panel for Selected Payment -->
+                            <div class="bg-myntraLight p-4 rounded text-xs">
+                                ${state.paymentMethod === 'upi' ? `
+                                    <p class="font-bold text-myntraDark mb-2">Pay Instantly via UPI Apps (GPay, PhonePe, Paytm, BHIM)</p>
+                                    <input type="text" id="chk-upi" required value="${saved.upiId}" placeholder="Enter UPI ID (e.g. mobile@ybl or name@okicici)" class="w-full border border-gray-300 bg-white rounded px-3 py-2 focus:outline-none focus:border-myntraPink">
+                                ` : ''}
+                                ${state.paymentMethod === 'card' ? `
+                                    <p class="font-bold text-myntraDark mb-2">Enter RuPay / Visa / Mastercard Details</p>
+                                    <div class="grid grid-cols-2 gap-2.5">
+                                        <input type="text" required placeholder="Card Number (16 digits)" maxlength="16" class="col-span-2 border border-gray-300 bg-white rounded px-3 py-2">
+                                        <input type="text" required placeholder="MM / YY" maxlength="5" class="border border-gray-300 bg-white rounded px-3 py-2">
+                                        <input type="password" required placeholder="CVV" maxlength="3" class="border border-gray-300 bg-white rounded px-3 py-2">
+                                    </div>
+                                ` : ''}
+                                ${state.paymentMethod === 'netbanking' ? `
+                                    <p class="font-bold text-myntraDark mb-2">Select Your Indian Bank</p>
+                                    <select class="w-full border border-gray-300 bg-white rounded px-3 py-2 font-semibold">
+                                        <option>State Bank of India (SBI)</option>
+                                        <option>HDFC Bank</option>
+                                        <option>ICICI Bank</option>
+                                        <option>Axis Bank</option>
+                                        <option>Kotak Mahindra Bank</option>
+                                        <option>Punjab National Bank</option>
+                                    </select>
+                                ` : ''}
+                                ${state.paymentMethod === 'cod' ? `
+                                    <p class="font-bold text-myntraTeal"><i class="fa-solid fa-circle-check mr-1"></i>Pay by Cash or UPI QR at your doorstep upon delivery. No advance payment needed.</p>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Final Order Summary & Place Order Button -->
+                    <div class="lg:col-span-5">
+                        <div class="border border-gray-200 rounded-lg p-5 bg-myntraLight/40 sticky top-4 space-y-4">
+                            <h3 class="font-extrabold text-sm uppercase tracking-wider text-myntraDark border-b border-gray-200 pb-3">
+                                Order Summary (${totals.totalItems} Items)
+                            </h3>
+
+                            <!-- Mini Item List -->
+                            <div class="space-y-3 max-h-56 overflow-y-auto pr-1">
+                                ${state.bag.map(item => {
+                                    const p = products.find(prod => prod.id === item.productId);
+                                    return `
+                                        <div class="flex gap-3 items-center bg-white p-2.5 rounded border border-gray-100">
+                                            <img src="${p.image}" class="w-12 h-16 object-cover rounded">
+                                            <div class="flex-1 min-w-0 text-xs">
+                                                <p class="font-extrabold text-myntraDark">${p.brand}</p>
+                                                <p class="text-myntraGray truncate">${p.title}</p>
+                                                <p class="text-[11px] font-bold text-myntraGray mt-0.5">Size: ${item.size} • Qty: ${item.qty}</p>
+                                            </div>
+                                            <div class="text-xs font-extrabold text-myntraDark">${formatINR(p.price * item.qty)}</div>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+
+                            <!-- Detailed Price Breakdown -->
+                            <div class="border-t border-gray-200 pt-3 text-xs space-y-2">
+                                <div class="flex justify-between text-myntraGray">
+                                    <span>Total MRP</span>
+                                    <span>${formatINR(totals.totalMRP)}</span>
+                                </div>
+                                <div class="flex justify-between text-myntraGray">
+                                    <span>Discount on MRP</span>
+                                    <span class="text-myntraTeal font-bold">- ${formatINR(totals.discountOnMRP)}</span>
+                                </div>
+                                ${totals.couponDiscount > 0 ? `
+                                    <div class="flex justify-between text-myntraPink font-bold">
+                                        <span>Coupon (DESI20)</span>
+                                        <span>- ${formatINR(totals.couponDiscount)}</span>
+                                    </div>
+                                ` : ''}
+                                <div class="flex justify-between text-myntraGray">
+                                    <span>Platform Fee</span>
+                                    <span>${formatINR(totals.platformFee)}</span>
+                                </div>
+                                <div class="flex justify-between text-myntraGray">
+                                    <span>Shipping (${state.deliveryType === 'express' ? 'Express Air' : 'Standard'})</span>
+                                    <span class="${totals.deliveryFee === 0 ? 'text-myntraTeal font-bold' : 'font-bold text-myntraDark'}">${totals.deliveryFee === 0 ? 'FREE' : formatINR(totals.deliveryFee)}</span>
+                                </div>
+                                <div class="flex justify-between text-base font-extrabold text-myntraDark border-t border-gray-300 pt-3 mt-2">
+                                    <span>Total Payable</span>
+                                    <span class="text-myntraPink">${formatINR(totals.finalPayable)}</span>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="w-full bg-myntraPink hover:bg-myntraPinkHover text-white font-extrabold text-sm uppercase tracking-wider py-4 rounded shadow-lg transition flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-lock"></i>
+                                <span>Place Order • ${formatINR(totals.finalPayable)}</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            `;
+        };
+
+        const fillDemoAddress = () => {
+            document.getElementById('chk-name').value = 'Ananya Verma';
+            document.getElementById('chk-mobile').value = '9820112233';
+            document.getElementById('chk-pincode').value = '560034';
+            document.getElementById('chk-city').value = 'Bengaluru';
+            document.getElementById('chk-address').value = 'No. 48, 12th Main Road, Indiranagar Stage 2';
+            document.getElementById('chk-state').value = 'Karnataka';
+            const upi = document.getElementById('chk-upi');
+            if (upi) upi.value = 'ananya.verma@okhdfcbank';
+            showToast('Demo Indian shipping address filled!');
+        };
+
+        const submitOrderForm = (e) => {
+            e.preventDefault();
+            const customerName = document.getElementById('chk-name').value;
+            const mobile = document.getElementById('chk-mobile').value;
+            const address = document.getElementById('chk-address').value;
+            const city = document.getElementById('chk-city').value;
+            const stateName = document.getElementById('chk-state').value;
+            const pincode = document.getElementById('chk-pincode').value;
+
+            const totals = calculateBagTotals();
+            const orderId = 'BS-IND-' + Math.floor(100000 + Math.random() * 900000);
+
+            // Calculate estimated delivery date
+            const daysToAdd = state.deliveryType === 'express' ? 2 : 5;
+            const estDate = new Date();
+            estDate.setDate(estDate.getDate() + daysToAdd);
+            const formattedEstDate = estDate.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+
+            const orderedItemsSnapshot = [...state.bag];
+
+            // Clear shopping bag
+            state.bag = [];
+            state.couponApplied = null;
+            updateHeaderBadges();
+
+            // Update step indicator
+            document.getElementById('step-indicator-form').className = "text-myntraTeal";
+            document.getElementById('step-indicator-confirm').className = "text-myntraPink border-b-2 border-myntraPink pb-0.5";
+
+            const modalBody = document.getElementById('checkout-modal-body');
+            modalBody.innerHTML = `
+                <div class="max-w-2xl mx-auto text-center py-6 px-4">
+                    <div class="w-20 h-20 rounded-full bg-emerald-100 text-myntraTeal flex items-center justify-center mx-auto mb-4 shadow-inner">
+                        <i class="fa-solid fa-check text-4xl"></i>
+                    </div>
+                    <span class="text-xs font-extrabold uppercase tracking-widest text-myntraTeal bg-emerald-50 px-3 py-1 rounded-full">Order Confirmed</span>
+                    <h2 class="text-2xl sm:text-3xl font-black text-myntraDark mt-2">Dhanyawad, ${customerName}!</h2>
+                    <p class="text-sm text-myntraGray mt-1">Your authentic Indian brand order has been placed and is being packed.</p>
+
+                    <!-- Order Meta Box -->
+                    <div class="mt-6 bg-myntraLight rounded-lg p-5 text-left grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs border border-gray-200">
+                        <div>
+                            <p class="text-myntraGray uppercase font-bold">Order ID</p>
+                            <p class="text-sm font-extrabold text-myntraDark mt-0.5">${orderId}</p>
+                        </div>
+                        <div>
+                            <p class="text-myntraGray uppercase font-bold">Estimated Delivery</p>
+                            <p class="text-sm font-extrabold text-myntraTeal mt-0.5"><i class="fa-solid fa-calendar-check mr-1"></i>${formattedEstDate}</p>
+                        </div>
+                        <div>
+                            <p class="text-myntraGray uppercase font-bold">Shipping To</p>
+                            <p class="font-bold text-myntraDark mt-0.5">${address}, ${city}, ${stateName} - ${pincode}</p>
+                            <p class="text-myntraGray">Mobile: +91 ${mobile}</p>
+                        </div>
+                        <div>
+                            <p class="text-myntraGray uppercase font-bold">Payment Summary</p>
+                            <p class="font-extrabold text-sm text-myntraPink mt-0.5">${formatINR(totals.finalPayable)} (${state.paymentMethod.toUpperCase()})</p>
+                            <p class="text-myntraTeal font-semibold">Saved ${formatINR(totals.discountOnMRP + totals.couponDiscount)} on this order</p>
+                        </div>
+                    </div>
+
+                    <!-- Ordered Items Recap -->
+                    <div class="mt-5 text-left border border-gray-200 rounded-lg p-4">
+                        <p class="text-xs font-extrabold uppercase text-myntraDark mb-3">Items in Your Shipment (${totals.totalItems})</p>
+                        <div class="space-y-2.5 max-h-44 overflow-y-auto">
+                            ${orderedItemsSnapshot.map(item => {
+                                const p = products.find(prod => prod.id === item.productId);
+                                return `
+                                    <div class="flex items-center justify-between text-xs border-b border-gray-100 pb-2 last:border-0">
+                                        <div class="flex items-center gap-3">
+                                            <img src="${p.image}" class="w-10 h-12 object-cover rounded">
+                                            <div>
+                                                <p class="font-extrabold text-myntraDark">${p.brand}</p>
+                                                <p class="text-myntraGray">${p.title} (Size: ${item.size} × ${item.qty})</p>
+                                            </div>
+                                        </div>
+                                        <span class="font-bold text-myntraDark">${formatINR(p.price * item.qty)}</span>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+
+                    <button onclick="closeCheckoutModal(); resetToHome();" class="mt-7 bg-myntraPink hover:bg-myntraPinkHover text-white font-extrabold text-xs uppercase tracking-wider px-8 py-4 rounded shadow-lg transition">
+                        Continue Shopping on BharatStyle
+                    </button>
+                </div>
+            `;
+        };
+
+        // ==========================================
+        // 10. INITIALIZE APPLICATION ON LOAD
+        // ==========================================
+        window.onload = () => {
+            updateHeaderBadges();
+            renderAllCatalogUI();
+        };
+    </script>
+</body>
+</html>
