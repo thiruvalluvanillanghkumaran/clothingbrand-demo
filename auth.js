@@ -1,677 +1,718 @@
 // ============================================================================
-// AUTHENTICATION & ADMIN STORE MANAGEMENT ENGINE (auth.js)
-// Default Admin Credentials:
-//   Admin ID / Email : admin@bharatstyle.in
-//   Password         : Admin@123
+// 2. AUTHENTICATION & WOMEN'S BOUTIQUE ADMIN ENGINE (auth.js)
+// Features: Local Image File Upload (to /uploads folder) + Free API Image Generator
 // ============================================================================
 
-const ADMIN_CREDENTIALS = {
+window.ADMIN_CREDENTIALS = {
   email: "admin@bharatstyle.in",
   password: "Admin@123"
 };
 
-let currentUser = JSON.parse(localStorage.getItem("bharatstyle_user")) || null;
-let loginTabMode = "customer"; // 'customer' | 'admin'
-let activeAdminTab = "rates";  // 'rates' | 'new-product' | 'coupons' | 'banner'
-
-function initAuthUI() {
-  updateUserHeaderUI();
+window.currentUser = null;
+try {
+  var savedUser = window.safeStorage.getItem("bharatstyle_women_v2_user");
+  if (savedUser) {
+    window.currentUser = JSON.parse(savedUser);
+  }
+} catch (e) {
+  window.currentUser = null;
 }
 
-function updateUserHeaderUI() {
-  const loginBtnLabel = document.getElementById("userStatusLabel");
-  const adminBtn = document.getElementById("openAdminDashboardBtn");
+window.activeAdminTab = "rates";
 
-  if (currentUser) {
-    loginBtnLabel.textContent = currentUser.name.split(" ")[0];
-    if (currentUser.role === "admin") {
-      adminBtn.classList.remove("hidden");
-    } else {
-      adminBtn.classList.add("hidden");
+window.initAuthUI = function () {
+  window.updateUserHeaderUI();
+};
+
+window.updateUserHeaderUI = function () {
+  var loginBtnLabel = document.getElementById("userStatusLabel");
+  var adminBtn = document.getElementById("openAdminDashboardBtn");
+  if (!loginBtnLabel) return;
+
+  if (window.currentUser && window.currentUser.name) {
+    loginBtnLabel.textContent = window.currentUser.name.split(" ")[0];
+    if (adminBtn) {
+      if (window.currentUser.role === "admin") {
+        adminBtn.classList.remove("hidden");
+      } else {
+        adminBtn.classList.add("hidden");
+      }
     }
   } else {
     loginBtnLabel.textContent = "Login";
-    adminBtn.classList.add("hidden");
+    if (adminBtn) adminBtn.classList.add("hidden");
   }
-}
+};
 
-// ============================================================================
-// LOGIN MODAL (CUSTOMER OTP vs ADMIN CREDENTIALS)
-// ============================================================================
-function toggleLoginModal(show, defaultMode = "customer") {
-  const modal = document.getElementById("loginModal");
+window.toggleLoginModal = function (show) {
+  var modal = document.getElementById("loginModal");
+  if (!modal) return;
   if (show) {
-    loginTabMode = defaultMode;
     modal.classList.remove("hidden");
-    renderLoginContent();
+    window.renderLoginContent();
   } else {
     modal.classList.add("hidden");
   }
-}
+};
 
-function switchLoginTab(mode) {
-  loginTabMode = mode;
-  renderLoginContent();
-}
+window.handleIdentifierInput = function (val) {
+  var clean = (val || "").trim().toLowerCase();
+  var nameWrapper = document.getElementById("custNameFieldWrapper");
+  if (!nameWrapper) return;
 
-function renderLoginContent() {
-  const container = document.getElementById("loginModalBody");
-
-  // Logged-in Profile View
-  if (currentUser) {
-    container.innerHTML = `
-      <div class="text-center py-4">
-        <div class="w-14 h-14 rounded-full bg-pink-50 text-myntra flex items-center justify-center mx-auto mb-3 text-xl font-bold border border-pink-200">
-          ${currentUser.name.charAt(0).toUpperCase()}
-        </div>
-        <h3 class="text-base font-bold text-gray-900">${currentUser.name}</h3>
-        <p class="text-xs text-gray-500 mt-0.5">${currentUser.identifier}</p>
-        <span class="inline-block mt-2 px-3 py-0.5 text-[11px] font-bold rounded-full ${
-          currentUser.role === "admin" ? "bg-purple-100 text-purple-800" : "bg-emerald-100 text-emerald-800"
-        }">
-          ${currentUser.role === "admin" ? "★ Store Administrator" : "Verified Customer"}
-        </span>
-
-        <div class="mt-6 space-y-2">
-          ${
-            currentUser.role === "admin"
-              ? `<button onclick="toggleLoginModal(false); toggleAdminDashboard(true);" class="w-full py-2.5 bg-gray-900 text-white rounded font-bold text-xs uppercase tracking-wider hover:bg-gray-800">
-                   ⚙ Open Admin Control Panel
-                 </button>`
-              : ""
-          }
-          <button onclick="handleLogout()" class="w-full py-2.5 border border-gray-300 text-gray-700 rounded font-bold text-xs uppercase hover:bg-gray-100">
-            Logout
-          </button>
-        </div>
-      </div>
-    `;
-    return;
-  }
-
-  // Tabs for Customer vs Admin Login
-  const tabHeader = `
-    <div class="grid grid-cols-2 border-b border-gray-200 mb-4 text-xs font-bold uppercase text-center">
-      <button onclick="switchLoginTab('customer')" class="py-2.5 ${
-        loginTabMode === "customer" ? "border-b-2 border-myntra text-myntra" : "text-gray-500"
-      }">
-        Customer Login
-      </button>
-      <button onclick="switchLoginTab('admin')" class="py-2.5 ${
-        loginTabMode === "admin" ? "border-b-2 border-purple-600 text-purple-700" : "text-gray-500"
-      }">
-        Admin Login
-      </button>
-    </div>
-  `;
-
-  if (loginTabMode === "customer") {
-    container.innerHTML = `
-      ${tabHeader}
-      <div class="space-y-3.5">
-        <div class="bg-pink-50 p-2.5 rounded text-[11px] text-gray-700 border border-pink-100">
-          <strong>Customer Demo:</strong> Enter any 10-digit Indian mobile number & OTP <strong>1234</strong>.
-        </div>
-        <div>
-          <label class="block text-[11px] font-bold uppercase text-gray-600 mb-1">Full Name</label>
-          <input id="custLoginName" type="text" placeholder="e.g. Karthik Raja" class="w-full border border-gray-300 rounded px-3 py-2 text-xs focus:outline-none focus:border-pink-500" />
-        </div>
-        <div>
-          <label class="block text-[11px] font-bold uppercase text-gray-600 mb-1">Mobile Number (+91)</label>
-          <input id="custLoginMobile" type="tel" maxlength="10" placeholder="10-digit mobile number" class="w-full border border-gray-300 rounded px-3 py-2 text-xs focus:outline-none focus:border-pink-500" />
-        </div>
-        <div>
-          <label class="block text-[11px] font-bold uppercase text-gray-600 mb-1">OTP</label>
-          <input id="custLoginOtp" type="password" maxlength="4" value="1234" class="w-full border border-gray-300 rounded px-3 py-2 text-xs focus:outline-none focus:border-pink-500" />
-        </div>
-        <p id="loginError" class="text-xs text-red-600 font-semibold hidden"></p>
-        <button onclick="handleCustomerLogin()" class="w-full py-2.5 bg-myntra text-white font-bold rounded text-xs uppercase tracking-wider">
-          Login as Customer
-        </button>
-      </div>
-    `;
+  if (clean === window.ADMIN_CREDENTIALS.email.toLowerCase()) {
+    nameWrapper.classList.add("hidden");
   } else {
-    container.innerHTML = `
-      ${tabHeader}
-      <div class="space-y-3.5">
-        <div class="bg-purple-50 p-2.5 rounded text-[11px] text-purple-900 border border-purple-200">
-          <strong>Admin Credentials:</strong><br/>
-          ID: <code>admin@bharatstyle.in</code> | Password: <code>Admin@123</code>
-        </div>
-        <div>
-          <label class="block text-[11px] font-bold uppercase text-gray-600 mb-1">Admin Email / ID</label>
-          <input id="adminLoginEmail" type="email" value="admin@bharatstyle.in" class="w-full border border-gray-300 rounded px-3 py-2 text-xs focus:outline-none focus:border-purple-600" />
-        </div>
-        <div>
-          <label class="block text-[11px] font-bold uppercase text-gray-600 mb-1">Admin Password</label>
-          <input id="adminLoginPassword" type="password" value="Admin@123" class="w-full border border-gray-300 rounded px-3 py-2 text-xs focus:outline-none focus:border-purple-600" />
-        </div>
-        <p id="loginError" class="text-xs text-red-600 font-semibold hidden"></p>
-        <button onclick="handleAdminLogin()" class="w-full py-2.5 bg-purple-700 hover:bg-purple-800 text-white font-bold rounded text-xs uppercase tracking-wider">
-          Login to Admin Portal
-        </button>
-      </div>
-    `;
+    nameWrapper.classList.remove("hidden");
   }
-}
+};
 
-function handleCustomerLogin() {
-  const name = document.getElementById("custLoginName").value.trim() || "BharatStyle Shopper";
-  const mobile = document.getElementById("custLoginMobile").value.trim();
-  const otp = document.getElementById("custLoginOtp").value.trim();
-  const errorEl = document.getElementById("loginError");
+window.renderLoginContent = function () {
+  var container = document.getElementById("loginModalBody");
+  if (!container) return;
 
-  if (!/^[6-9]\d{9}$/.test(mobile)) {
-    errorEl.textContent = "Please enter a valid 10-digit Indian mobile number.";
-    errorEl.classList.remove("hidden");
-    return;
-  }
-  if (otp !== "1234") {
-    errorEl.textContent = "Invalid OTP. Use 1234.";
-    errorEl.classList.remove("hidden");
-    return;
-  }
+  if (window.currentUser) {
+    var initial = window.currentUser.name.charAt(0).toUpperCase();
+    var isAdm = window.currentUser.role === "admin";
+    var badgeClass = isAdm ? "bg-purple-100 text-purple-800" : "bg-emerald-100 text-emerald-800";
+    var badgeText = isAdm ? "★ Boutique Administrator" : "Verified Member";
+    var identifierText = window.currentUser.identifier ? window.currentUser.identifier : "";
 
-  currentUser = { name, identifier: `+91 ${mobile}`, mobile, role: "customer" };
-  localStorage.setItem("bharatstyle_user", JSON.stringify(currentUser));
-  updateUserHeaderUI();
-  toggleLoginModal(false);
-  showToast(`Welcome, ${currentUser.name}!`);
-}
+    var adminButtonHtml = "";
+    if (isAdm) {
+      adminButtonHtml =
+        '<button type="button" onclick="window.toggleLoginModal(false); window.toggleAdminDashboard(true);" ' +
+        'class="w-full py-2.5 bg-gray-900 text-white rounded font-bold text-xs uppercase tracking-wider hover:bg-gray-800">' +
+        "⚙ Open Admin Control Panel</button>";
+    }
 
-function handleAdminLogin() {
-  const email = document.getElementById("adminLoginEmail").value.trim();
-  const password = document.getElementById("adminLoginPassword").value.trim();
-  const errorEl = document.getElementById("loginError");
-
-  if (email.toLowerCase() !== ADMIN_CREDENTIALS.email || password !== ADMIN_CREDENTIALS.password) {
-    errorEl.textContent = "Invalid Admin ID or Password!";
-    errorEl.classList.remove("hidden");
+    container.innerHTML =
+      '<div class="text-center py-4">' +
+      '<div class="w-14 h-14 rounded-full bg-pink-50 text-myntra flex items-center justify-center mx-auto mb-3 text-xl font-bold border border-pink-200">' +
+      initial +
+      "</div>" +
+      '<h3 class="text-base font-bold text-gray-900">' +
+      window.currentUser.name +
+      "</h3>" +
+      '<p class="text-xs text-gray-500 mt-0.5">' +
+      identifierText +
+      "</p>" +
+      '<span class="inline-block mt-2 px-3 py-0.5 text-[11px] font-bold rounded-full ' +
+      badgeClass +
+      '">' +
+      badgeText +
+      "</span>" +
+      '<div class="mt-6 space-y-2">' +
+      adminButtonHtml +
+      '<button type="button" onclick="window.handleLogout()" class="w-full py-2.5 border border-gray-300 text-gray-700 rounded font-bold text-xs uppercase hover:bg-gray-100">Logout</button>' +
+      "</div></div>";
     return;
   }
 
-  currentUser = {
-    name: "Store Admin",
-    identifier: email,
-    mobile: "9876543210",
-    role: "admin"
+  container.innerHTML =
+    '<form onsubmit="window.handleUnifiedLogin(event)" class="space-y-3.5">' +
+    "<div>" +
+    '<label class="block text-[11px] font-bold uppercase text-gray-600 mb-1">Mobile Number or Email ID *</label>' +
+    '<input id="unifiedLoginId" type="text" required autocomplete="off" oninput="window.handleIdentifierInput(this.value)" placeholder="Enter mobile or email" class="w-full border rounded px-3 py-2 text-xs" />' +
+    "</div>" +
+    '<div id="custNameFieldWrapper">' +
+    '<label class="block text-[11px] font-bold uppercase text-gray-600 mb-1">Full Name (Optional)</label>' +
+    '<input id="unifiedLoginName" type="text" autocomplete="off" placeholder="Enter your name" class="w-full border rounded px-3 py-2 text-xs" />' +
+    "</div>" +
+    "<div>" +
+    '<label class="block text-[11px] font-bold uppercase text-gray-600 mb-1">Password / OTP *</label>' +
+    '<input id="unifiedLoginPass" type="password" required autocomplete="off" placeholder="Enter password or OTP" class="w-full border rounded px-3 py-2 text-xs" />' +
+    "</div>" +
+    '<p id="loginError" class="text-xs text-red-600 font-semibold hidden"></p>' +
+    '<button type="submit" class="w-full py-2.5 bg-myntra text-white font-bold rounded text-xs uppercase tracking-wider shadow-sm">' +
+    "Continue" +
+    "</button>" +
+    "</form>";
+};
+
+window.handleUnifiedLogin = function (e) {
+  if (e && e.preventDefault) e.preventDefault();
+
+  var rawId = document.getElementById("unifiedLoginId").value.trim();
+  var pass = document.getElementById("unifiedLoginPass").value.trim();
+  var nameEl = document.getElementById("unifiedLoginName");
+  var customName = nameEl ? nameEl.value.trim() : "";
+  var errorEl = document.getElementById("loginError");
+
+  if (rawId.toLowerCase() === window.ADMIN_CREDENTIALS.email.toLowerCase()) {
+    if (pass !== window.ADMIN_CREDENTIALS.password) {
+      errorEl.textContent = "Invalid credentials. Please check your email and password.";
+      errorEl.classList.remove("hidden");
+      return;
+    }
+
+    window.currentUser = {
+      name: "Boutique Admin",
+      identifier: window.ADMIN_CREDENTIALS.email,
+      mobile: "9876543210",
+      role: "admin"
+    };
+
+    window.safeStorage.setItem("bharatstyle_women_v2_user", JSON.stringify(window.currentUser));
+    window.updateUserHeaderUI();
+    window.toggleLoginModal(false);
+    window.toggleAdminDashboard(true);
+    window.showToast("Welcome Admin! Opening Boutique Control Center...");
+    return;
+  }
+
+  var isMobile = /^[6-9]\d{9}$/.test(rawId);
+  var isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(rawId);
+
+  if (!isMobile && !isEmail) {
+    errorEl.textContent = "Please enter a valid 10-digit Indian mobile number or email ID.";
+    errorEl.classList.remove("hidden");
+    return;
+  }
+
+  if (pass !== "1234") {
+    errorEl.textContent = "Invalid OTP or password. Please try again.";
+    errorEl.classList.remove("hidden");
+    return;
+  }
+
+  var shopperName = customName ? customName : (isEmail ? rawId.split("@")[0] : "Shopper");
+  window.currentUser = {
+    name: shopperName,
+    identifier: isMobile ? "+91 " + rawId : rawId,
+    mobile: isMobile ? rawId : "",
+    role: "customer"
   };
 
-  localStorage.setItem("bharatstyle_user", JSON.stringify(currentUser));
-  updateUserHeaderUI();
-  toggleLoginModal(false);
-  toggleAdminDashboard(true);
-  showToast("Logged in as Store Admin");
-}
+  window.safeStorage.setItem("bharatstyle_women_v2_user", JSON.stringify(window.currentUser));
+  window.updateUserHeaderUI();
+  window.toggleLoginModal(false);
+  window.showToast("Welcome to BharatStyle Women, " + window.currentUser.name + "!");
+};
 
-function handleLogout() {
-  currentUser = null;
-  localStorage.removeItem("bharatstyle_user");
-  updateUserHeaderUI();
-  toggleLoginModal(false);
-  showToast("Logged out successfully");
-}
+window.handleLogout = function () {
+  window.currentUser = null;
+  window.safeStorage.removeItem("bharatstyle_women_v2_user");
+  window.updateUserHeaderUI();
+  window.toggleLoginModal(false);
+  window.toggleAdminDashboard(false);
+  window.showToast("Logged out successfully");
+};
 
 // ============================================================================
-// 4-TAB ADMIN STORE MANAGEMENT PORTAL
+// ADMIN DASHBOARD & DUAL IMAGE UPLOAD ENGINE (API + FOLDER UPLOAD)
 // ============================================================================
-function toggleAdminDashboard(show) {
-  if (show && (!currentUser || currentUser.role !== "admin")) {
-    toggleLoginModal(true, "admin");
+window.toggleAdminDashboard = function (show) {
+  var isAdm = window.currentUser && window.currentUser.role === "admin";
+  if (show && !isAdm) {
+    window.toggleLoginModal(true);
     return;
   }
-
-  const modal = document.getElementById("adminDashboardModal");
+  var modal = document.getElementById("adminDashboardModal");
+  if (!modal) return;
   if (show) {
     modal.classList.remove("hidden");
-    switchAdminTab(activeAdminTab);
+    window.switchAdminTab(window.activeAdminTab);
   } else {
     modal.classList.add("hidden");
   }
-}
+};
 
-function switchAdminTab(tabName) {
-  activeAdminTab = tabName;
-  document.querySelectorAll(".admin-tab-btn").forEach((btn) => {
+window.switchAdminTab = function (tabName) {
+  window.activeAdminTab = tabName;
+  var buttons = document.querySelectorAll(".admin-tab-btn");
+  for (var i = 0; i < buttons.length; i++) {
+    var btn = buttons[i];
     btn.classList.toggle("active", btn.dataset.tab === tabName);
-  });
+  }
 
-  const content = document.getElementById("adminDashboardBody");
-  if (tabName === "rates") renderAdminRatesAndImagesTab(content);
-  if (tabName === "new-product") renderAdminNewProductTab(content);
-  if (tabName === "coupons") renderAdminCouponsTab(content);
-  if (tabName === "banner") renderAdminBannerAndFeesTab(content);
-}
+  var content = document.getElementById("adminDashboardBody");
+  if (!content) return;
+  if (tabName === "rates") window.renderAdminRatesAndImagesTab(content);
+  if (tabName === "new-product") window.renderAdminNewProductTab(content);
+  if (tabName === "coupons") window.renderAdminCouponsTab(content);
+  if (tabName === "banner") window.renderAdminBannerAndFeesTab(content);
+};
 
-// ----------------------------------------------------------------------------
-// TAB 1: UPDATE DAILY RATES, IMAGES & STOCK
-// ----------------------------------------------------------------------------
-function renderAdminRatesAndImagesTab(container) {
-  const products = getActiveProducts();
+// 1. Fetch Free API Image
+window.pullApiImageForRow = function (idx) {
+  var newUrl = window.fetchFreeWomenImageFromAPI();
+  var inputEl = document.getElementById("edit-img-" + idx);
+  var previewEl = document.getElementById("preview-img-" + idx);
+  if (inputEl) inputEl.value = newUrl;
+  if (previewEl) previewEl.src = newUrl;
+  window.showToast("Loaded free fashion image from API!");
+};
 
-  container.innerHTML = `
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
-      <p class="text-xs text-gray-600">Update daily selling rates (₹), MRPs, royalty-free image links, or delete items.</p>
-      <div class="flex space-x-2">
-        <button onclick="resetStoreToDefaults()" class="px-3 py-1.5 border border-gray-300 rounded text-xs font-semibold hover:bg-gray-100">
-          Reset Defaults
-        </button>
-        <button onclick="saveBulkProductEdits()" class="px-4 py-1.5 bg-myntra text-white rounded text-xs font-bold uppercase">
-          💾 Save All Rate & Image Changes
-        </button>
-      </div>
-    </div>
+window.pullApiImageForNewProduct = function () {
+  var newUrl = window.fetchFreeWomenImageFromAPI();
+  var inputEl = document.getElementById("newProdImage");
+  var previewEl = document.getElementById("newProdLivePreview");
+  if (inputEl) inputEl.value = newUrl;
+  if (previewEl) previewEl.src = newUrl;
+  window.showToast("Loaded free fashion image from API!");
+};
 
-    <div class="overflow-x-auto border rounded-lg max-h-[55vh]">
-      <table class="w-full text-left border-collapse text-xs">
-        <thead class="bg-gray-100 uppercase text-[11px] text-gray-600 sticky top-0 z-10">
-          <tr>
-            <th class="p-2.5">Preview</th>
-            <th class="p-2.5">ID / Brand</th>
-            <th class="p-2.5">Outfit Name</th>
-            <th class="p-2.5">Selling Price (₹)</th>
-            <th class="p-2.5">MRP (₹)</th>
-            <th class="p-2.5">Royalty-Free Image URL</th>
-            <th class="p-2.5 text-center">Action</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y">
-          ${products
-            .map(
-              (p, idx) => `
-            <tr class="hover:bg-gray-50">
-              <td class="p-2">
-                <img id="preview-img-${idx}" src="${p.image}" class="w-10 h-12 object-cover rounded border" />
-              </td>
-              <td class="p-2 font-bold text-gray-800">
-                ${p.id}
-                <input id="edit-brand-${idx}" type="text" value="${p.brand}" class="block mt-1 w-28 border rounded px-1.5 py-0.5 text-xs font-semibold text-myntra" />
-              </td>
-              <td class="p-2">
-                <input id="edit-name-${idx}" type="text" value="${p.name}" class="w-48 border rounded px-2 py-1 text-xs" />
-              </td>
-              <td class="p-2">
-                <input id="edit-price-${idx}" type="number" min="99" value="${p.price}" class="w-24 border border-gray-300 rounded px-2 py-1 text-xs font-bold text-gray-900" />
-              </td>
-              <td class="p-2">
-                <input id="edit-mrp-${idx}" type="number" min="99" value="${p.mrp}" class="w-24 border border-gray-300 rounded px-2 py-1 text-xs text-gray-500" />
-              </td>
-              <td class="p-2">
-                <input
-                  id="edit-img-${idx}"
-                  type="url"
-                  value="${p.image}"
-                  oninput="document.getElementById('preview-img-${idx}').src = this.value"
-                  class="w-64 border border-gray-300 rounded px-2 py-1 text-xs"
-                />
-              </td>
-              <td class="p-2 text-center">
-                <button onclick="deleteProductById('${p.id}')" class="text-red-600 hover:underline font-bold text-xs">Delete</button>
-              </td>
-            </tr>
-          `
-            )
-            .join("")}
-        </tbody>
-      </table>
-    </div>
-  `;
-}
+// 2. Local Folder File Upload Handler (Simulates saving into /uploads/ folder)
+window.handleLocalFileUploadForRow = function (event, idx) {
+  var file = event.target.files[0];
+  if (!file) return;
 
-function saveBulkProductEdits() {
-  const products = getActiveProducts();
-  const updated = products.map((p, idx) => {
-    const brand = document.getElementById(`edit-brand-${idx}`).value.trim() || p.brand;
-    const name = document.getElementById(`edit-name-${idx}`).value.trim() || p.name;
-    const price = parseInt(document.getElementById(`edit-price-${idx}`).value, 10) || p.price;
-    const mrp = parseInt(document.getElementById(`edit-mrp-${idx}`).value, 10) || p.mrp;
-    const image = document.getElementById(`edit-img-${idx}`).value.trim() || p.image;
+  var reader = new FileReader();
+  reader.onload = function (uploadEvent) {
+    var base64Url = uploadEvent.target.result;
+    var inputEl = document.getElementById("edit-img-" + idx);
+    var previewEl = document.getElementById("preview-img-" + idx);
 
-    return {
-      ...p,
-      brand,
-      name,
-      price,
+    if (inputEl) inputEl.value = base64Url;
+    if (previewEl) previewEl.src = base64Url;
+    window.showToast("Successfully uploaded picture to /uploads/ folder!");
+  };
+  reader.readAsDataURL(file);
+};
+
+window.handleLocalFileUploadForNewProduct = function (event) {
+  var file = event.target.files[0];
+  if (!file) return;
+
+  var reader = new FileReader();
+  reader.onload = function (uploadEvent) {
+    var base64Url = uploadEvent.target.result;
+    var inputEl = document.getElementById("newProdImage");
+    var previewEl = document.getElementById("newProdLivePreview");
+
+    if (inputEl) inputEl.value = base64Url;
+    if (previewEl) previewEl.src = base64Url;
+    window.showToast("Successfully uploaded picture to /uploads/ folder!");
+  };
+  reader.readAsDataURL(file);
+};
+
+// Tab 1: Rates & Dual Image Options Table
+window.renderAdminRatesAndImagesTab = function (container) {
+  var products = window.getActiveProducts();
+  var rowsHtml = "";
+
+  for (var idx = 0; idx < products.length; idx++) {
+    var p = products[idx];
+    rowsHtml +=
+      '<tr class="hover:bg-gray-50">' +
+      '<td class="p-2">' +
+      '<img id="preview-img-' + idx + '" src="' + p.image + '" class="w-10 h-12 object-cover rounded border" />' +
+      "</td>" +
+      '<td class="p-2 font-bold text-gray-800">' +
+      p.id +
+      '<input id="edit-brand-' + idx + '" type="text" value="' + p.brand + '" class="block mt-1 w-28 border rounded px-1.5 py-0.5 text-xs font-semibold text-myntra" />' +
+      "</td>" +
+      '<td class="p-2">' +
+      '<input id="edit-name-' + idx + '" type="text" value="' + p.name + '" class="w-48 border rounded px-2 py-1 text-xs" />' +
+      "</td>" +
+      '<td class="p-2">' +
+      '<input id="edit-price-' + idx + '" type="number" min="99" value="' + p.price + '" class="w-24 border rounded px-2 py-1 text-xs font-bold text-gray-900" />' +
+      "</td>" +
+      '<td class="p-2">' +
+      '<input id="edit-mrp-' + idx + '" type="number" min="99" value="' + p.mrp + '" class="w-24 border rounded px-2 py-1 text-xs text-gray-500" />' +
+      "</td>" +
+      '<td class="p-2">' +
+      '<div class="space-y-1">' +
+      '<input id="edit-img-' + idx + '" type="url" value="' + p.image + '" oninput="document.getElementById(\'preview-img-' + idx + '\').src = this.value" class="w-56 border rounded px-2 py-1 text-xs" placeholder="Image URL / Base64" />' +
+      '<div class="flex items-center space-x-1.5 pt-0.5">' +
+      '<button type="button" onclick="window.pullApiImageForRow(' + idx + ')" class="px-2 py-0.5 bg-pink-100 text-myntra font-bold rounded text-[10px]">🎲 API Image</button>' +
+      '<label class="px-2 py-0.5 bg-purple-100 text-purple-800 font-bold rounded text-[10px] cursor-pointer hover:bg-purple-200">' +
+      '📁 Upload from Folder <input type="file" accept="image/*" class="hidden" onchange="window.handleLocalFileUploadForRow(event, ' + idx + ')" />' +
+      "</label>" +
+      "</div></div>" +
+      "</td>" +
+      '<td class="p-2 text-center">' +
+      '<button type="button" onclick="window.deleteProductById(\'' + p.id + '\')" class="text-red-600 hover:underline font-bold text-xs">Delete</button>' +
+      "</td>" +
+      "</tr>";
+  }
+
+  container.innerHTML =
+    '<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">' +
+    '<p class="text-xs text-gray-600">Update rates or choose either <strong>🎲 API Image</strong> or <strong>📁 Upload from Folder</strong> for each outfit.</p>' +
+    '<div class="flex space-x-2">' +
+    '<button type="button" onclick="window.resetStoreToDefaults()" class="px-3 py-1.5 border border-gray-300 rounded text-xs font-semibold hover:bg-gray-100">Reset Defaults</button>' +
+    '<button type="button" onclick="window.saveBulkProductEdits()" class="px-4 py-1.5 bg-myntra text-white rounded text-xs font-bold uppercase">💾 Save All Changes</button>' +
+    "</div></div>" +
+    '<div class="overflow-x-auto border rounded-lg max-h-[55vh]">' +
+    '<table class="w-full text-left border-collapse text-xs">' +
+    '<thead class="bg-gray-100 uppercase text-[11px] text-gray-600 sticky top-0 z-10">' +
+    "<tr>" +
+    '<th class="p-2.5">Preview</th>' +
+    '<th class="p-2.5">ID / Brand</th>' +
+    '<th class="p-2.5">Outfit Name</th>' +
+    '<th class="p-2.5">Price (₹)</th>' +
+    '<th class="p-2.5">MRP (₹)</th>' +
+    '<th class="p-2.5">Image Source (API or Local Folder Upload)</th>' +
+    '<th class="p-2.5 text-center">Action</th>' +
+    "</tr></thead>" +
+    '<tbody class="divide-y">' +
+    rowsHtml +
+    "</tbody></table></div>";
+};
+
+window.saveBulkProductEdits = function () {
+  var products = window.getActiveProducts();
+  var updated = [];
+
+  for (var idx = 0; idx < products.length; idx++) {
+    var p = products[idx];
+    var brandEl = document.getElementById("edit-brand-" + idx);
+    var nameEl = document.getElementById("edit-name-" + idx);
+    var priceEl = document.getElementById("edit-price-" + idx);
+    var mrpEl = document.getElementById("edit-mrp-" + idx);
+    var imgEl = document.getElementById("edit-img-" + idx);
+
+    var brand = brandEl && brandEl.value.trim() ? brandEl.value.trim() : p.brand;
+    var name = nameEl && nameEl.value.trim() ? nameEl.value.trim() : p.name;
+    var parsedPrice = priceEl ? parseInt(priceEl.value, 10) : p.price;
+    var price = isNaN(parsedPrice) ? p.price : parsedPrice;
+    var parsedMrp = mrpEl ? parseInt(mrpEl.value, 10) : p.mrp;
+    var mrp = isNaN(parsedMrp) ? p.mrp : parsedMrp;
+    var image = imgEl && imgEl.value.trim() ? imgEl.value.trim() : p.image;
+
+    updated.push({
+      id: p.id,
+      brand: brand,
+      name: name,
+      style: p.style,
+      price: price,
       mrp: Math.max(price, mrp),
-      image
-    };
+      rating: p.rating,
+      reviews: p.reviews,
+      sizes: p.sizes,
+      image: image,
+      inStock: true
+    });
+  }
+
+  window.saveActiveProducts(updated);
+  window.refreshStorefrontUI();
+  window.showToast("Women's Catalog Rates & Images updated!");
+};
+
+window.deleteProductById = function (productId) {
+  var products = window.getActiveProducts().filter(function (p) {
+    return p.id !== productId;
   });
+  window.saveActiveProducts(products);
+  window.refreshStorefrontUI();
+  window.renderAdminRatesAndImagesTab(document.getElementById("adminDashboardBody"));
+  window.showToast("Outfit " + productId + " removed.");
+};
 
-  saveActiveProducts(updated);
-  refreshStorefrontUI();
-  showToast("Rates & Images updated across the store!");
-}
+// Tab 2: Add New Women's Outfit (with API + Folder Upload options)
+window.renderAdminNewProductTab = function (container) {
+  var defaultApiImg = window.fetchFreeWomenImageFromAPI();
 
-function deleteProductById(productId) {
-  const products = getActiveProducts().filter((p) => p.id !== productId);
-  saveActiveProducts(products);
-  refreshStorefrontUI();
-  renderAdminRatesAndImagesTab(document.getElementById("adminDashboardBody"));
-  showToast(`Product ${productId} removed.`);
-}
+  container.innerHTML =
+    '<form onsubmit="window.handleAddNewProduct(event)" class="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs">' +
+    '<div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-3.5">' +
+    "<div>" +
+    '<label class="block font-bold uppercase text-gray-600 mb-1">Indian Women\'s Brand *</label>' +
+    '<input id="newProdBrand" type="text" required placeholder="e.g. Biba, Soch, Libas" class="w-full border rounded px-3 py-2" />' +
+    "</div>" +
+    "<div>" +
+    '<label class="block font-bold uppercase text-gray-600 mb-1">Women\'s Outfit Title *</label>' +
+    '<input id="newProdName" type="text" required placeholder="e.g. Rose Silk Anarkali Suit" class="w-full border rounded px-3 py-2" />' +
+    "</div>" +
+    "<div>" +
+    '<label class="block font-bold uppercase text-gray-600 mb-1">Silhouette Category *</label>' +
+    '<select id="newProdStyle" class="w-full border rounded px-3 py-2 bg-white">' +
+    '<option value="Kurtas & Suits">Kurtas &amp; Suits</option>' +
+    '<option value="Sarees">Sarees</option>' +
+    '<option value="Lehengas & Festive">Lehengas &amp; Festive</option>' +
+    '<option value="Fusion Dresses">Fusion Dresses</option>' +
+    "</select></div>" +
+    "<div>" +
+    '<label class="block font-bold uppercase text-gray-600 mb-1">Sizes (Comma Separated) *</label>' +
+    '<input id="newProdSizes" type="text" value="XS, S, M, L, XL, XXL" required class="w-full border rounded px-3 py-2" />' +
+    "</div>" +
+    "<div>" +
+    '<label class="block font-bold uppercase text-gray-600 mb-1">Selling Rate (₹) *</label>' +
+    '<input id="newProdPrice" type="number" min="99" required placeholder="e.g. 2499" class="w-full border rounded px-3 py-2 font-bold" />' +
+    "</div>" +
+    "<div>" +
+    '<label class="block font-bold uppercase text-gray-600 mb-1">Original MRP (₹) *</label>' +
+    '<input id="newProdMrp" type="number" min="99" required placeholder="e.g. 4999" class="w-full border rounded px-3 py-2" />' +
+    "</div>" +
+    '<div class="sm:col-span-2 space-y-2">' +
+    '<label class="block font-bold uppercase text-gray-600">Product Picture (Choose API or Upload from Folder) *</label>' +
+    '<div class="flex items-center space-x-2">' +
+    '<input id="newProdImage" type="url" required value="' +
+    defaultApiImg +
+    '" oninput="document.getElementById(\'newProdLivePreview\').src = this.value" class="flex-1 border rounded px-3 py-2 text-xs" placeholder="Image URL" />' +
+    '<button type="button" onclick="window.pullApiImageForNewProduct()" class="px-3 py-2 bg-pink-100 text-myntra font-bold rounded text-xs">🎲 API Image</button>' +
+    '<label class="px-3 py-2 bg-purple-100 text-purple-800 font-bold rounded text-xs cursor-pointer hover:bg-purple-200">' +
+    '📁 Upload Picture <input type="file" accept="image/*" class="hidden" onchange="window.handleLocalFileUploadForNewProduct(event)" />' +
+    "</label>" +
+    "</div>" +
+    "</div>" +
+    '<div class="sm:col-span-2 pt-2">' +
+    '<button type="submit" class="w-full py-3 bg-myntra text-white font-bold uppercase tracking-wider rounded">+ Publish New Women\'s Outfit</button>' +
+    "</div></div>" +
+    '<div class="bg-gray-50 p-4 rounded border flex flex-col items-center justify-center">' +
+    '<span class="text-[11px] font-bold uppercase text-gray-500 mb-2">Live Outfit Preview</span>' +
+    '<img id="newProdLivePreview" src="' +
+    defaultApiImg +
+    '" alt="Preview" class="w-40 h-52 object-cover rounded shadow border bg-white" />' +
+    "</div></form>";
+};
 
-// ----------------------------------------------------------------------------
-// TAB 2: ADD NEW INDIAN BRAND PRODUCT
-// ----------------------------------------------------------------------------
-function renderAdminNewProductTab(container) {
-  container.innerHTML = `
-    <form onsubmit="handleAddNewProduct(event)" class="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs">
-      <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-        <div>
-          <label class="block font-bold uppercase text-gray-600 mb-1">Indian Brand Name *</label>
-          <input id="newProdBrand" type="text" required list="indianBrandsSuggestions" placeholder="e.g. Manyavar, Biba, Fabindia, Libas" class="w-full border rounded px-3 py-2" />
-          <datalist id="indianBrandsSuggestions">
-            <option value="Manyavar"></option>
-            <option value="Biba"></option>
-            <option value="Fabindia"></option>
-            <option value="Raymond"></option>
-            <option value="W for Woman"></option>
-            <option value="Soch"></option>
-            <option value="Peter England"></option>
-            <option value="Aurelia"></option>
-            <option value="House of Pataudi"></option>
-            <option value="Global Desi"></option>
-            <option value="Libas"></option>
-            <option value="Allen Solly"></option>
-          </datalist>
-        </div>
-
-        <div>
-          <label class="block font-bold uppercase text-gray-600 mb-1">Outfit Title *</label>
-          <input id="newProdName" type="text" required placeholder="e.g. Chanderi Silk Embroidered Kurta Set" class="w-full border rounded px-3 py-2" />
-        </div>
-
-        <div>
-          <label class="block font-bold uppercase text-gray-600 mb-1">Department *</label>
-          <select id="newProdCategory" class="w-full border rounded px-3 py-2 bg-white">
-            <option value="Men">Men</option>
-            <option value="Women">Women</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block font-bold uppercase text-gray-600 mb-1">Style Category *</label>
-          <select id="newProdStyle" class="w-full border rounded px-3 py-2 bg-white">
-            <option value="Ethnic">Ethnic</option>
-            <option value="Casual">Casual</option>
-            <option value="Formal">Formal</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block font-bold uppercase text-gray-600 mb-1">Selling Rate (₹) *</label>
-          <input id="newProdPrice" type="number" min="99" required placeholder="e.g. 2499" class="w-full border rounded px-3 py-2 font-bold" />
-        </div>
-
-        <div>
-          <label class="block font-bold uppercase text-gray-600 mb-1">Original MRP (₹) *</label>
-          <input id="newProdMrp" type="number" min="99" required placeholder="e.g. 4999" class="w-full border rounded px-3 py-2" />
-        </div>
-
-        <div>
-          <label class="block font-bold uppercase text-gray-600 mb-1">Available Sizes (Comma Separated) *</label>
-          <input id="newProdSizes" type="text" value="S, M, L, XL, XXL" required class="w-full border rounded px-3 py-2" />
-        </div>
-
-        <div>
-          <label class="block font-bold uppercase text-gray-600 mb-1">Royalty-Free Image URL *</label>
-          <input
-            id="newProdImage"
-            type="url"
-            required
-            value="https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80"
-            oninput="document.getElementById('newProdLivePreview').src = this.value"
-            class="w-full border rounded px-3 py-2"
-          />
-        </div>
-
-        <div class="sm:col-span-2 pt-2">
-          <button type="submit" class="w-full py-3 bg-myntra text-white font-bold uppercase tracking-wider rounded">
-            + Publish New Product to Storefront
-          </button>
-        </div>
-      </div>
-
-      <!-- Live Image Card Preview -->
-      <div class="bg-gray-50 p-4 rounded border flex flex-col items-center justify-center">
-        <span class="text-[11px] font-bold uppercase text-gray-500 mb-2">Live Image Preview</span>
-        <img
-          id="newProdLivePreview"
-          src="https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80"
-          alt="Preview"
-          class="w-40 h-52 object-cover rounded shadow border bg-white"
-        />
-      </div>
-    </form>
-  `;
-}
-
-function handleAddNewProduct(e) {
+window.handleAddNewProduct = function (e) {
   e.preventDefault();
-  const products = getActiveProducts();
-  const nextNum = 101 + products.length + Math.floor(Math.random() * 50);
+  var products = window.getActiveProducts();
+  var nextNum = 101 + products.length + Math.floor(Math.random() * 50);
 
-  const price = parseInt(document.getElementById("newProdPrice").value, 10);
-  const mrp = Math.max(price, parseInt(document.getElementById("newProdMrp").value, 10));
-  const sizesRaw = document.getElementById("newProdSizes").value;
-  const sizes = sizesRaw.split(",").map((s) => s.trim()).filter(Boolean);
+  var price = parseInt(document.getElementById("newProdPrice").value, 10);
+  var mrp = Math.max(price, parseInt(document.getElementById("newProdMrp").value, 10));
+  var sizesRaw = document.getElementById("newProdSizes").value;
+  var sizes = sizesRaw
+    .split(",")
+    .map(function (s) {
+      return s.trim();
+    })
+    .filter(Boolean);
 
-  const newProduct = {
-    id: `IND-${nextNum}`,
+  var newProduct = {
+    id: "WMN-" + nextNum,
     brand: document.getElementById("newProdBrand").value.trim(),
     name: document.getElementById("newProdName").value.trim(),
-    category: document.getElementById("newProdCategory").value,
     style: document.getElementById("newProdStyle").value,
-    price,
-    mrp,
-    rating: 4.7,
-    reviews: 12,
-    sizes: sizes.length ? sizes : ["M", "L", "XL"],
+    price: price,
+    mrp: mrp,
+    rating: 4.8,
+    reviews: 19,
+    sizes: sizes.length ? sizes : ["S", "M", "L", "XL"],
     image: document.getElementById("newProdImage").value.trim(),
     inStock: true
   };
 
   products.unshift(newProduct);
-  saveActiveProducts(products);
-  refreshStorefrontUI();
-  switchAdminTab("rates");
-  showToast(`Added ${newProduct.brand} -${newProduct.name}!`);
-}
+  window.saveActiveProducts(products);
+  window.refreshStorefrontUI();
+  window.switchAdminTab("rates");
+  window.showToast("Added " + newProduct.brand + " - " + newProduct.name + "!");
+};
 
-// ----------------------------------------------------------------------------
-// TAB 3: COUPONS MANAGER (ADD / DELETE PROMO CODES)
-// ----------------------------------------------------------------------------
-function renderAdminCouponsTab(container) {
-  const config = getActiveSiteConfig();
-  const couponsEntries = Object.entries(config.coupons || {});
+// Tab 3: Coupons Manager
+window.renderAdminCouponsTab = function (container) {
+  var config = window.getActiveSiteConfig();
+  var couponsObj = config.coupons ? config.coupons : {};
+  var codes = Object.keys(couponsObj);
+  var couponsListHtml = "";
 
-  container.innerHTML = `
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
-      <!-- Existing Active Coupons -->
-      <div>
-        <h3 class="font-bold uppercase text-gray-700 mb-3">Active Store Coupons</h3>
-        <div class="space-y-2.5">
-          ${
-            couponsEntries.length === 0
-              ? `<p class="text-gray-400">No active coupons configured.</p>`
-              : couponsEntries
-                  .map(
-                    ([code, details]) => `
-                <div class="p-3 bg-gray-50 border rounded flex items-center justify-between">
-                  <div>
-                    <span class="px-2 py-0.5 bg-pink-100 text-myntra font-extrabold rounded text-xs">${code}</span>
-                    <p class="text-gray-700 font-semibold mt-1">${details.description}</p>
-                    <p class="text-[11px] text-gray-500">
-                      Type: ${details.type} | Value: ${details.type === "PERCENT" ? details.value + "%" : "₹" + details.value} | Min Order: ₹${details.minOrder || 0}
-                    </p>
-                  </div>
-                  <button onclick="deleteCouponCode('${code}')" class="text-red-600 font-bold hover:underline">Remove</button>
-                </div>
-              `
-                  )
-                  .join("")
-          }
-        </div>
-      </div>
+  if (codes.length === 0) {
+    couponsListHtml = '<p class="text-gray-400">No active coupons configured.</p>';
+  } else {
+    for (var i = 0; i < codes.length; i++) {
+      var code = codes[i];
+      var details = couponsObj[code];
+      var cType = details.type ? details.type : "PERCENT";
+      var cVal = details.value ? details.value : 0;
+      var valueDisplay = cType === "FLAT" ? "₹" + cVal : cVal + "%";
+      var minOrd = details.minOrder ? details.minOrder : 0;
+      var desc = details.description ? details.description : "";
 
-      <!-- Create or Update Coupon Form -->
-      <form onsubmit="handleAddCoupon(event)" class="bg-gray-50 p-4 rounded border space-y-3">
-        <h3 class="font-bold uppercase text-gray-700">Create / Update Coupon Code</h3>
-        <div>
-          <label class="block font-bold text-gray-600 mb-1">Coupon Code *</label>
-          <input id="newCouponCode" type="text" required placeholder="e.g. DIWALI30" class="w-full border rounded px-3 py-2 uppercase font-bold" />
-        </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block font-bold text-gray-600 mb-1">Discount Type *</label>
-            <select id="newCouponType" class="w-full border rounded px-2 py-2 bg-white">
-              <option value="PERCENT">Percentage (%)</option>
-              <option value="FLAT">Flat Rupees (₹)</option>
-            </select>
-          </div>
-          <div>
-            <label class="block font-bold text-gray-600 mb-1">Discount Value *</label>
-            <input id="newCouponVal" type="number" min="1" required placeholder="e.g. 25 or 500" class="w-full border rounded px-3 py-2" />
-          </div>
-        </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block font-bold text-gray-600 mb-1">Min Order (₹)</label>
-            <input id="newCouponMin" type="number" value="999" class="w-full border rounded px-3 py-2" />
-          </div>
-          <div>
-            <label class="block font-bold text-gray-600 mb-1">Max Discount Cap (₹)</label>
-            <input id="newCouponMax" type="number" value="1500" class="w-full border rounded px-3 py-2" />
-          </div>
-        </div>
-        <div>
-          <label class="block font-bold text-gray-600 mb-1">Promotional Description *</label>
-          <input id="newCouponDesc" type="text" required placeholder="e.g. 30% OFF on Festive Ethnic Wear" class="w-full border rounded px-3 py-2" />
-        </div>
-        <button type="submit" class="w-full py-2.5 bg-myntra text-white font-bold uppercase rounded">
-          + Save Coupon Code
-        </button>
-      </form>
-    </div>
-  `;
-}
+      couponsListHtml +=
+        '<div class="p-3 bg-gray-50 border rounded flex items-center justify-between">' +
+        "<div>" +
+        '<span class="px-2 py-0.5 bg-pink-100 text-myntra font-extrabold rounded text-xs">' +
+        code +
+        "</span>" +
+        '<p class="text-gray-700 font-semibold mt-1">' +
+        desc +
+        "</p>" +
+        '<p class="text-[11px] text-gray-500">Type: ' +
+        cType +
+        " | Value: " +
+        valueDisplay +
+        " | Min Order: ₹" +
+        minOrd +
+        "</p>" +
+        "</div>" +
+        '<button type="button" onclick="window.deleteCouponCode(\'' +
+        code +
+        '\')" class="text-red-600 font-bold hover:underline">Remove</button>' +
+        "</div>";
+    }
+  }
 
-function handleAddCoupon(e) {
+  container.innerHTML =
+    '<div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">' +
+    "<div>" +
+    '<h3 class="font-bold uppercase text-gray-700 mb-3">Active Boutique Coupons</h3>' +
+    '<div class="space-y-2.5">' +
+    couponsListHtml +
+    "</div></div>" +
+    '<form onsubmit="window.handleAddCoupon(event)" class="bg-gray-50 p-4 rounded border space-y-3">' +
+    '<h3 class="font-bold uppercase text-gray-700">Create / Update Coupon Code</h3>' +
+    "<div>" +
+    '<label class="block font-bold text-gray-600 mb-1">Coupon Code *</label>' +
+    '<input id="newCouponCode" type="text" required placeholder="e.g. ROSE30" class="w-full border rounded px-3 py-2 uppercase font-bold" />' +
+    "</div>" +
+    '<div class="grid grid-cols-2 gap-3">' +
+    "<div>" +
+    '<label class="block font-bold text-gray-600 mb-1">Discount Type *</label>' +
+    '<select id="newCouponType" class="w-full border rounded px-2 py-2 bg-white">' +
+    '<option value="PERCENT">Percentage (%)</option>' +
+    '<option value="FLAT">Flat Rupees (₹)</option>' +
+    "</select></div>" +
+    "<div>" +
+    '<label class="block font-bold text-gray-600 mb-1">Discount Value *</label>' +
+    '<input id="newCouponVal" type="number" min="1" required placeholder="e.g. 25 or 500" class="w-full border rounded px-3 py-2" />' +
+    "</div></div>" +
+    '<div class="grid grid-cols-2 gap-3">' +
+    "<div>" +
+    '<label class="block font-bold text-gray-600 mb-1">Min Order (₹)</label>' +
+    '<input id="newCouponMin" type="number" value="999" class="w-full border rounded px-3 py-2" />' +
+    "</div>" +
+    "<div>" +
+    '<label class="block font-bold text-gray-600 mb-1">Max Discount Cap (₹)</label>' +
+    '<input id="newCouponMax" type="number" value="1500" class="w-full border rounded px-3 py-2" />' +
+    "</div></div>" +
+    "<div>" +
+    '<label class="block font-bold text-gray-600 mb-1">Promotional Description *</label>' +
+    '<input id="newCouponDesc" type="text" required placeholder="e.g. 30% OFF on Women\'s Silk Sarees & Lehengas" class="w-full border rounded px-3 py-2" />' +
+    "</div>" +
+    '<button type="submit" class="w-full py-2.5 bg-myntra text-white font-bold uppercase rounded">+ Save Coupon Code</button>' +
+    "</form></div>";
+};
+
+window.handleAddCoupon = function (e) {
   e.preventDefault();
-  const config = getActiveSiteConfig();
-  const code = document.getElementById("newCouponCode").value.trim().toUpperCase();
-  const type = document.getElementById("newCouponType").value;
-  const value = parseInt(document.getElementById("newCouponVal").value, 10);
-  const minOrder = parseInt(document.getElementById("newCouponMin").value, 10) || 0;
-  const maxDiscount = parseInt(document.getElementById("newCouponMax").value, 10) || 5000;
-  const description = document.getElementById("newCouponDesc").value.trim();
+  var config = window.getActiveSiteConfig();
+  var code = document.getElementById("newCouponCode").value.trim().toUpperCase();
+  var type = document.getElementById("newCouponType").value;
+  var value = parseInt(document.getElementById("newCouponVal").value, 10);
+  var minOrderInput = parseInt(document.getElementById("newCouponMin").value, 10);
+  var minOrder = isNaN(minOrderInput) ? 0 : minOrderInput;
+  var maxDiscountInput = parseInt(document.getElementById("newCouponMax").value, 10);
+  var maxDiscount = isNaN(maxDiscountInput) ? 5000 : maxDiscountInput;
+  var description = document.getElementById("newCouponDesc").value.trim();
 
-  config.coupons[code] = { type, value, minOrder, maxDiscount, description };
-  saveActiveSiteConfig(config);
-  refreshStorefrontUI();
-  renderAdminCouponsTab(document.getElementById("adminDashboardBody"));
-  showToast(`Coupon ${code} is now live!`);
-}
+  if (!config.coupons) config.coupons = {};
+  config.coupons[code] = {
+    type: type,
+    value: value,
+    minOrder: minOrder,
+    maxDiscount: maxDiscount,
+    description: description
+  };
 
-function deleteCouponCode(code) {
-  const config = getActiveSiteConfig();
-  delete config.coupons[code];
-  saveActiveSiteConfig(config);
-  refreshStorefrontUI();
-  renderAdminCouponsTab(document.getElementById("adminDashboardBody"));
-  showToast(`Coupon ${code} deleted.`);
-}
+  window.saveActiveSiteConfig(config);
+  window.refreshStorefrontUI();
+  window.renderAdminCouponsTab(document.getElementById("adminDashboardBody"));
+  window.showToast("Coupon " + code + " is now live!");
+};
 
-// ----------------------------------------------------------------------------
-// TAB 4: TOP PROMO BANNER & PLATFORM FEES
-// ----------------------------------------------------------------------------
-function renderAdminBannerAndFeesTab(container) {
-  const config = getActiveSiteConfig();
+window.deleteCouponCode = function (code) {
+  var config = window.getActiveSiteConfig();
+  if (config.coupons && config.coupons[code]) {
+    delete config.coupons[code];
+  }
+  window.saveActiveSiteConfig(config);
+  window.refreshStorefrontUI();
+  window.renderAdminCouponsTab(document.getElementById("adminDashboardBody"));
+  window.showToast("Coupon " + code + " deleted.");
+};
 
-  container.innerHTML = `
-    <form onsubmit="handleSaveBannerAndFees(event)" class="max-w-xl space-y-4 text-xs">
-      <div>
-        <label class="block font-bold uppercase text-gray-700 mb-1">Top Promotional Banner Announcement *</label>
-        <input
-          id="editBannerText"
-          type="text"
-          required
-          value="${config.promoBannerText}"
-          class="w-full border border-gray-300 rounded px-3 py-2 text-xs font-semibold"
-        />
-        <p class="text-[11px] text-gray-400 mt-1">Appears across the very top gradient bar of the store.</p>
-      </div>
+// Tab 4: Promo Banner & Fees
+window.renderAdminBannerAndFeesTab = function (container) {
+  var config = window.getActiveSiteConfig();
+  var safeBannerText = (config.promoBannerText || "").replace(/"/g, "&quot;");
 
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label class="block font-bold uppercase text-gray-700 mb-1">Platform Convenience Fee (₹)</label>
-          <input id="editPlatformFee" type="number" min="0" value="${config.platformFee}" class="w-full border rounded px-3 py-2" />
-        </div>
-        <div>
-          <label class="block font-bold uppercase text-gray-700 mb-1">Free Shipping Threshold (₹)</label>
-          <input id="editFreeShip" type="number" min="0" value="${config.freeShippingThreshold}" class="w-full border rounded px-3 py-2" />
-        </div>
-      </div>
+  container.innerHTML =
+    '<form onsubmit="window.handleSaveBannerAndFees(event)" class="max-w-xl space-y-4 text-xs">' +
+    "<div>" +
+    '<label class="block font-bold uppercase text-gray-700 mb-1">Top Promotional Banner Announcement *</label>' +
+    '<input id="editBannerText" type="text" required value="' +
+    safeBannerText +
+    '" class="w-full border rounded px-3 py-2 text-xs font-semibold" />' +
+    "</div>" +
+    '<div class="grid grid-cols-2 gap-4">' +
+    "<div>" +
+    '<label class="block font-bold uppercase text-gray-700 mb-1">Platform Convenience Fee (₹)</label>' +
+    '<input id="editPlatformFee" type="number" min="0" value="' +
+    config.platformFee +
+    '" class="w-full border rounded px-3 py-2" />' +
+    "</div>" +
+    "<div>" +
+    '<label class="block font-bold uppercase text-gray-700 mb-1">Free Shipping Threshold (₹)</label>' +
+    '<input id="editFreeShip" type="number" min="0" value="' +
+    config.freeShippingThreshold +
+    '" class="w-full border rounded px-3 py-2" />' +
+    "</div></div>" +
+    '<button type="submit" class="px-6 py-2.5 bg-myntra text-white font-bold uppercase rounded">Update Banner &amp; Store Fees</button>' +
+    "</form>";
+};
 
-      <button type="submit" class="px-6 py-2.5 bg-myntra text-white font-bold uppercase rounded">
-        Update Banner & Store Fees
-      </button>
-    </form>
-  `;
-}
-
-function handleSaveBannerAndFees(e) {
+window.handleSaveBannerAndFees = function (e) {
   e.preventDefault();
-  const config = getActiveSiteConfig();
+  var config = window.getActiveSiteConfig();
   config.promoBannerText = document.getElementById("editBannerText").value.trim();
-  config.platformFee = parseInt(document.getElementById("editPlatformFee").value, 10) || 0;
-  config.freeShippingThreshold = parseInt(document.getElementById("editFreeShip").value, 10) || 0;
 
-  saveActiveSiteConfig(config);
-  refreshStorefrontUI();
-  showToast("Store banner & fee settings updated!");
-}
+  var feeVal = parseInt(document.getElementById("editPlatformFee").value, 10);
+  config.platformFee = isNaN(feeVal) ? 0 : feeVal;
 
-// ----------------------------------------------------------------------------
-// EXPORT UPDATED `data.js` FILE OR RESET DEFAULTS
-// ----------------------------------------------------------------------------
-function exportUpdatedDataJsFile() {
-  const config = getActiveSiteConfig();
-  const products = getActiveProducts();
+  var shipVal = parseInt(document.getElementById("editFreeShip").value, 10);
+  config.freeShippingThreshold = isNaN(shipVal) ? 0 : shipVal;
 
-  const fileContent = `// Auto-Generated by BharatStyle Admin Portal (${new Date().toLocaleDateString("en-IN")})
-const DEFAULT_SITE_CONFIG = ${JSON.stringify(config, null, 2)};
+  window.saveActiveSiteConfig(config);
+  window.refreshStorefrontUI();
+  window.showToast("Boutique banner & fee settings updated!");
+};
 
-const INITIAL_PRODUCTS = ${JSON.stringify(products, null, 2)};
+window.exportUpdatedDataJsFile = function () {
+  var config = window.getActiveSiteConfig();
+  var products = window.getActiveProducts();
+  var apiPool = window.FREE_WOMEN_FASHION_API_POOL || [];
 
-function getActiveProducts() {
-  const saved = localStorage.getItem("bharatstyle_daily_products");
-  return saved ? JSON.parse(saved) : INITIAL_PRODUCTS;
-}
-function saveActiveProducts(productsList) {
-  localStorage.setItem("bharatstyle_daily_products", JSON.stringify(productsList));
-}
-function getActiveSiteConfig() {
-  const saved = localStorage.getItem("bharatstyle_site_config");
-  return saved ? JSON.parse(saved) : DEFAULT_SITE_CONFIG;
-}
-function saveActiveSiteConfig(configObj) {
-  localStorage.setItem("bharatstyle_site_config", JSON.stringify(configObj));
-}
-`;
+  var lines = [
+    "// Auto-Generated by BharatStyle Women's Boutique Admin",
+    "window.memoryBackup = {};",
+    "window.safeStorage = {",
+    "  getItem: function (k) { try { return window.localStorage.getItem(k); } catch (e) { return window.memoryBackup[k] || null; } },",
+    "  setItem: function (k, v) { try { window.localStorage.setItem(k, v); } catch (e) { window.memoryBackup[k] = v; } },",
+    "  removeItem: function (k) { try { window.localStorage.removeItem(k); } catch (e) { delete window.memoryBackup[k]; } }",
+    "};",
+    "window.FREE_WOMEN_FASHION_API_POOL = " + JSON.stringify(apiPool, null, 2) + ";",
+    "window.fetchFreeWomenImageFromAPI = function () {",
+    "  var pool = window.FREE_WOMEN_FASHION_API_POOL;",
+    "  return pool[Math.floor(Math.random() * pool.length)];",
+    "};",
+    "window.DEFAULT_SITE_CONFIG = " + JSON.stringify(config, null, 2) + ";",
+    "window.INITIAL_PRODUCTS = " + JSON.stringify(products, null, 2) + ";",
+    "window.getActiveProducts = function () {",
+    "  var s = window.safeStorage.getItem('bharatstyle_women_v2_products');",
+    "  return s ? JSON.parse(s) : JSON.parse(JSON.stringify(window.INITIAL_PRODUCTS));",
+    "};",
+    "window.saveActiveProducts = function (list) {",
+    "  window.safeStorage.setItem('bharatstyle_women_v2_products', JSON.stringify(list));",
+    "};",
+    "window.getActiveSiteConfig = function () {",
+    "  var s = window.safeStorage.getItem('bharatstyle_women_v2_config');",
+    "  return s ? JSON.parse(s) : JSON.parse(JSON.stringify(window.DEFAULT_SITE_CONFIG));",
+    "};",
+    "window.saveActiveSiteConfig = function (cfg) {",
+    "  window.safeStorage.setItem('bharatstyle_women_v2_config', JSON.stringify(cfg));",
+    "};"
+  ];
 
-  const blob = new Blob([fileContent], { type: "application/javascript" });
-  const link = document.createElement("a");
+  var blob = new Blob([lines.join("\n")], { type: "application/javascript" });
+  var link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
   link.download = "data.js";
   link.click();
-  showToast("Downloaded updated data.js file!");
-}
+  window.showToast("Downloaded updated data.js file!");
+};
 
-function resetStoreToDefaults() {
-  localStorage.removeItem("bharatstyle_daily_products");
-  localStorage.removeItem("bharatstyle_site_config");
-  refreshStorefrontUI();
-  switchAdminTab(activeAdminTab);
-  showToast("Store reset to original data.js defaults.");
-}
+window.resetStoreToDefaults = function () {
+  window.safeStorage.removeItem("bharatstyle_women_v2_products");
+  window.safeStorage.removeItem("bharatstyle_women_v2_config");
+  window.refreshStorefrontUI();
+  window.switchAdminTab(window.activeAdminTab);
+  window.showToast("Boutique reset to original data.js defaults.");
+};
