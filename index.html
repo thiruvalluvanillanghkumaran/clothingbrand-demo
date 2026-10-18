@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BharatStyle Women | Indian Women's Clothing Brands Only</title>
+  <title>Aḍai Māḷikai Women | Indian Women's Clothing Brands Only</title>
   <!-- 100% Standalone Local Butter-Pink Rose Stylesheet -->
   <link rel="stylesheet" type="text/css" href="./styles.css" />
 </head>
@@ -21,7 +21,7 @@
         <a href="#" onclick="window.clearAllFilters(); return false;" class="flex items-center space-x-2">
           <span class="w-8 h-8 rounded-full bg-myntra text-white font-black flex items-center justify-center text-lg shadow-sm">B</span>
           <div>
-            <span class="font-extrabold text-lg tracking-tight text-gray-900">BHARAT<span class="text-myntra">STYLE</span></span>
+            <span class="font-extrabold text-lg tracking-tight text-gray-900">Adai Malikai <span class="text-myntra">STYLE</span></span>
             <span class="block text-[9px] uppercase tracking-widest text-myntra font-bold -mt-1">Indian Women's Wear</span>
           </div>
         </a>
@@ -199,7 +199,7 @@
       <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b pb-3 gap-2">
         <div>
           <span class="px-2 py-0.5 bg-purple-100 text-purple-800 font-bold text-[10px] uppercase rounded">Women's Boutique Admin</span>
-          <h2 class="font-extrabold text-base text-gray-900 mt-0.5">Manage Women's Rates, Free API Images, Coupons & Banner</h2>
+          <h2 class="font-extrabold text-base text-gray-900 mt-0.5">Manage Women's Rates, Images, Coupons & Banner</h2>
         </div>
         <div class="flex items-center space-x-2">
           <button
@@ -209,28 +209,26 @@
           >
             ⬇ Download Updated data.js
           </button>
+          <button type="button" onclick="window.switchAdminTab('operators')" data-tab="operators" class="admin-tab-btn">
+              Manage Operators & Approvals
+          </button>
+          <button type="button" onclick="window.switchAdminTab('marketing')" data-tab="marketing" class="admin-tab-btn">
+              Bulk Email & WhatsApp
+          </button>
           <button type="button" onclick="window.handleLogout()" class="px-3 py-1.5 border border-gray-300 text-gray-700 text-xs font-bold rounded hover:bg-gray-100">
             Logout Admin
           </button>
           <button type="button" onclick="window.toggleAdminDashboard(false)" class="text-gray-400 hover:text-gray-800 font-bold text-xl px-2">✕</button>
         </div>
       </div>
-
       <div class="flex border-b border-gray-200 overflow-x-auto">
-        <button type="button" onclick="window.switchAdminTab('rates')" data-tab="rates" class="admin-tab-btn active">
-          1. Update Rates & API Images
-        </button>
-        <button type="button" onclick="window.switchAdminTab('new-product')" data-tab="new-product" class="admin-tab-btn">
-          2. + Add Women's Outfit
-        </button>
-        <button type="button" onclick="window.switchAdminTab('coupons')" data-tab="coupons" class="admin-tab-btn">
-          3. Coupons Manager
-        </button>
-        <button type="button" onclick="window.switchAdminTab('banner')" data-tab="banner" class="admin-tab-btn">
-          4. Promo Banner & Fees
-        </button>
+          <button type="button" onclick="window.switchAdminTab('rates')" data-tab="rates" class="admin-tab-btn active">1. Rates &amp; API Images</button>
+          <button type="button" onclick="window.switchAdminTab('new-product')" data-tab="new-product" class="admin-tab-btn">2. + Add Outfit</button>
+          <button type="button" onclick="window.switchAdminTab('coupons')" data-tab="coupons" class="admin-tab-btn">3. Coupons</button>
+          <button type="button" onclick="window.switchAdminTab('banner')" data-tab="banner" class="admin-tab-btn">4. Banner &amp; Fees</button>
+          <button type="button" onclick="window.switchAdminTab('operators')" data-tab="operators" class="admin-tab-btn">5. Operators &amp; Approvals</button>
+          <button type="button" onclick="window.switchAdminTab('marketing')" data-tab="marketing" class="admin-tab-btn">6. Bulk Email &amp; WhatsApp</button>
       </div>
-
       <div id="adminDashboardBody" class="py-4 flex-1 overflow-y-auto"></div>
     </div>
   </div>
@@ -328,6 +326,7 @@
 
   <!-- External Scripts Linked in Order -->
   <script src="./data.js"></script>
+  <script src="./db.js"></script>
   <script src="./auth.js"></script>
   <script src="./app.js"></script>
 </body>
